@@ -26,6 +26,15 @@ export interface Certificate {
   created_at: string;
 }
 
+export interface VolunteerActivity {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url?: string | null;     // Photo 1
+  image_url_2?: string | null;   // Photo 2
+  created_at?: string;
+}
+
 export interface SocialLinks {
   github?: string;
   linkedin?: string;
@@ -45,4 +54,5 @@ export interface Profile {
 
 export type ProjectInsert = Omit<Project, 'id' | 'created_at'>;
 export type CertificateInsert = Omit<Certificate, 'id' | 'created_at'>;
+export type VolunteerActivityInsert = Omit<VolunteerActivity, 'id' | 'created_at'>;
 export type ProfileInsert = Omit<Profile, 'id'>;

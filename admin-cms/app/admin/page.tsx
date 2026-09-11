@@ -5,9 +5,10 @@ export default async function AdminDashboard() {
   const supabase = await createClient();
 
   // Fetch counts
-  const [{ count: projectCount }, { count: certCount }] = await Promise.all([
+  const [{ count: projectCount }, { count: certCount }, { count: volunteerCount }] = await Promise.all([
     supabase.from('projects').select('*', { count: 'exact', head: true }),
     supabase.from('certificates').select('*', { count: 'exact', head: true }),
+    supabase.from('volunteering').select('*', { count: 'exact', head: true }),
   ]);
 
   const stats = [
@@ -33,6 +34,17 @@ export default async function AdminDashboard() {
         </svg>
       ),
     },
+    {
+      label: 'Volunteering',
+      value: volunteerCount ?? 0,
+      href: '/admin/volunteering',
+      color: 'from-rose-600 to-rose-800',
+      icon: (
+        <svg className="w-8 h-8 text-rose-200" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
@@ -43,7 +55,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -61,10 +73,11 @@ export default async function AdminDashboard() {
 
       {/* Quick Actions */}
       <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { href: '/admin/projects', label: 'Manage Projects', desc: 'Add, edit or remove projects' },
           { href: '/admin/certificates', label: 'Manage Certificates', desc: 'Update your credentials' },
+          { href: '/admin/volunteering', label: 'Manage Volunteering', desc: 'Add community work & photos' },
           { href: '/admin/profile', label: 'Edit Profile', desc: 'Update bio, skills & social links' },
         ].map((action) => (
           <Link

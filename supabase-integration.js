@@ -145,6 +145,61 @@
     console.warn('[Supabase] Error loading certificates:', err);
   }
 
+  // 4. Fetch Volunteering Activities & Render
+  try {
+    const { data: volunteerItems, error: volError } = await supabase
+      .from('volunteering')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!volError && volunteerItems && volunteerItems.length > 0) {
+      const volGrid = document.querySelector('.volunteer-grid');
+      if (volGrid) {
+        let html = '';
+        volunteerItems.forEach((v) => {
+          const photo1 = v.image_url || '';
+          const photo2 = v.image_url_2 || '';
+          const hasPhoto1 = Boolean(photo1);
+          const hasPhoto2 = Boolean(photo2);
+          const isTwo = hasPhoto1 && hasPhoto2;
+
+          let photosHtml = '';
+          if (hasPhoto1 || hasPhoto2) {
+            photosHtml = `
+              <div class="volunteer-photos ${isTwo ? 'two' : 'single'}">
+                ${hasPhoto1 ? `
+                  <div>
+                    <img src="${escapeHtml(photo1)}" alt="${escapeHtml(v.title)} — photo 1" loading="lazy" decoding="async"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="img-fallback"><span class="ico">🤝</span><strong>Photo 1</strong><span>${escapeHtml(v.title)}</span></div>
+                  </div>
+                ` : ''}
+                ${hasPhoto2 ? `
+                  <div>
+                    <img src="${escapeHtml(photo2)}" alt="${escapeHtml(v.title)} — photo 2" loading="lazy" decoding="async"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="img-fallback"><span class="ico">🤝</span><strong>Photo 2</strong><span>${escapeHtml(v.title)}</span></div>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }
+
+          html += `
+            <div class="volunteer-card reveal is-in">
+              ${photosHtml}
+              <div class="volunteer-title">${escapeHtml(v.title)}</div>
+              <p class="volunteer-desc">${escapeHtml(v.description || '')}</p>
+            </div>
+          `;
+        });
+        volGrid.innerHTML = html;
+      }
+    }
+  } catch (err) {
+    console.warn('[Supabase] Error loading volunteering:', err);
+  }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str)
