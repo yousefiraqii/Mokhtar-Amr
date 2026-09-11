@@ -13,17 +13,81 @@
 
   const supabase = window.supabase.createClient(config.url, config.anonKey);
 
-  // 1. Fetch Profile & Update Hero / Bio / Skills
+  // 1. Fetch Profile & Update Hero / Bio / Stats / Skills
   try {
     const { data: profile } = await supabase.from('profile').select('*').limit(1).single();
-    if (profile) {
+if (profile) {
+      // 1.1 Hero Title (Greeting & Name)
       if (profile.hero_title) {
-        const roleLine = document.querySelector('.role-line');
-        if (roleLine) roleLine.textContent = profile.hero_title;
+        const raw = profile.hero_title.trim();
+        const greetingMatch = raw.match(/^(hi|hello|hey|welcome)[,\s]+i['’]m\s+(.+)$/i);
+        const greetingEl = document.querySelector('.left-copy .greeting');
+        const nameEl = document.querySelector('.left-copy .name');
+
+        if (greetingMatch) {
+          if (greetingEl) greetingEl.textContent = `${cap(greetingMatch[1])}, I'm`;
+          if (nameEl) nameEl.innerHTML = escapeHtml(greetingMatch[2]).replace(/\s+/, '<br />');
+        } else if (nameEl) {
+          nameEl.innerHTML = escapeHtml(raw).replace(/\s+/, '<br />');
+        }
       }
-      if (profile.bio) {
+
+      // 1.2 Job Title (Top bar role & sub)
+      if (profile.job_title) {
+        const lines = profile.job_title.split(/[\n,]/).map((s) => s.trim()).filter(Boolean);
+        const roleEl = document.querySelector('.topbar .role');
+        const subEl = document.querySelector('.topbar .sub');
+        if (roleEl && lines[0]) roleEl.textContent = lines[0];
+        // Sub-role is optional; clear it when the admin only provided one line.
+        if (subEl) subEl.textContent = lines[1] || '';
+      }
+
+      // 1.3 Job Title 2 (Under Name)
+      if (profile.job_title_2) {
+        const roleLine = document.querySelector('.left-copy .role-line');
+        if (roleLine) {
+          roleLine.innerHTML = escapeHtml(profile.job_title_2).replace(/\n/g, '<br />');
+        }
+      }
+
+      // 1.4 About Paragraph (Hero paragraph)
+      if (profile.about_paragraph || profile.bio) {
         const descEl = document.querySelector('.left-copy .desc');
-        if (descEl) descEl.textContent = profile.bio;
+        if (descEl) descEl.textContent = profile.about_paragraph || profile.bio;
+      }
+
+      // 1.5 Experience & Statistics
+      const statEls = document.querySelectorAll('.stats .stat');
+      if (statEls.length >= 3) {
+        // Stat 1: Years Experience
+        if (profile.years_exp_value) {
+          const num = statEls[0].querySelector('.num');
+          if (num) num.innerHTML = formatStatNum(profile.years_exp_value);
+        }
+        if (profile.years_exp_label) {
+          const label = statEls[0].querySelector('.label');
+          if (label) label.innerHTML = escapeHtml(profile.years_exp_label).replace(/\s+/, '<br />');
+        }
+
+        // Stat 2: Projects Completed
+        if (profile.projects_val_value) {
+          const num = statEls[1].querySelector('.num');
+          if (num) num.innerHTML = formatStatNum(profile.projects_val_value);
+        }
+        if (profile.projects_val_label) {
+          const label = statEls[1].querySelector('.label');
+          if (label) label.innerHTML = escapeHtml(profile.projects_val_label).replace(/\s+/, '<br />');
+        }
+
+        // Stat 3: Happy Clients
+        if (profile.clients_val_value) {
+          const num = statEls[2].querySelector('.num');
+          if (num) num.innerHTML = formatStatNum(profile.clients_val_value);
+        }
+        if (profile.clients_val_label) {
+          const label = statEls[2].querySelector('.label');
+          if (label) label.innerHTML = escapeHtml(profile.clients_val_label).replace(/\s+/, '<br />');
+        }
       }
     }
   } catch (err) {
@@ -94,12 +158,6 @@
           `;
         });
         grid.innerHTML = html;
-
-        // Update project count in stats
-        const projectStatNum = document.querySelectorAll('.stat .num')[1];
-        if (projectStatNum) {
-          projectStatNum.innerHTML = projects.length + '<span>+</span>';
-        }
       }
     }
   } catch (err) {
@@ -242,6 +300,19 @@
     }
   } catch (err) {
     console.warn('[Supabase] Error loading research papers:', err);
+  }
+
+  function cap(str) {
+    const s = String(str || '').trim();
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+  }
+
+  function formatStatNum(val) {
+    const str = String(val).trim();
+    if (str.endsWith('+')) {
+      return escapeHtml(str.slice(0, -1)) + '<span>+</span>';
+    }
+    return escapeHtml(str);
   }
 
   function escapeHtml(str) {

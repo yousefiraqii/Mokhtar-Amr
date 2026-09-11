@@ -20,7 +20,23 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const [heroTitle, setHeroTitle] = useState('');
+  // 1. Hero Section Fields
+  const [heroTitle, setHeroTitle] = useState("Hi, I'm Mokhtar Amr");
+  const [jobTitle, setJobTitle] = useState('WEB DESIGNER\nDIGITAL CREATOR');
+  const [jobTitle2, setJobTitle2] = useState('WEB DESIGNER & UI/UX CREATOR');
+  const [aboutParagraph, setAboutParagraph] = useState(
+    'I design and build stylish, user-focused web experiences that combine creativity with strategy. Passionate about clean design, smooth interactions, and details that make a difference.'
+  );
+
+  // 2. Experience & Statistics Fields
+  const [yearsExpValue, setYearsExpValue] = useState('3+');
+  const [yearsExpLabel, setYearsExpLabel] = useState('Years Experience');
+  const [projectsValValue, setProjectsValValue] = useState('40+');
+  const [projectsValLabel, setProjectsValLabel] = useState('Projects Completed');
+  const [clientsValValue, setClientsValValue] = useState('20+');
+  const [clientsValLabel, setClientsValLabel] = useState('Happy Clients');
+
+  // 3. Bio & About
   const [bio, setBio] = useState('');
   const [aboutMe, setAboutMe] = useState('');
   const [skills, setSkills] = useState<string[]>([]);
@@ -34,7 +50,18 @@ export default function ProfilePage() {
     if (data) {
       const p = data as Profile;
       setProfileId(p.id);
-      setHeroTitle(p.hero_title ?? '');
+      if (p.hero_title !== undefined && p.hero_title !== null) setHeroTitle(p.hero_title);
+      if (p.job_title !== undefined && p.job_title !== null) setJobTitle(p.job_title);
+      if (p.job_title_2 !== undefined && p.job_title_2 !== null) setJobTitle2(p.job_title_2);
+      if (p.about_paragraph !== undefined && p.about_paragraph !== null) setAboutParagraph(p.about_paragraph);
+
+      if (p.years_exp_value !== undefined && p.years_exp_value !== null) setYearsExpValue(p.years_exp_value);
+      if (p.years_exp_label !== undefined && p.years_exp_label !== null) setYearsExpLabel(p.years_exp_label);
+      if (p.projects_val_value !== undefined && p.projects_val_value !== null) setProjectsValValue(p.projects_val_value);
+      if (p.projects_val_label !== undefined && p.projects_val_label !== null) setProjectsValLabel(p.projects_val_label);
+      if (p.clients_val_value !== undefined && p.clients_val_value !== null) setClientsValValue(p.clients_val_value);
+      if (p.clients_val_label !== undefined && p.clients_val_label !== null) setClientsValLabel(p.clients_val_label);
+
       setBio(p.bio ?? '');
       setAboutMe(p.about_me ?? '');
       setSkills(p.skills ?? []);
@@ -49,6 +76,15 @@ export default function ProfilePage() {
     setSaving(true);
     const payload = {
       hero_title: heroTitle,
+      job_title: jobTitle,
+      job_title_2: jobTitle2,
+      about_paragraph: aboutParagraph,
+      years_exp_value: yearsExpValue,
+      years_exp_label: yearsExpLabel,
+      projects_val_value: projectsValValue,
+      projects_val_label: projectsValLabel,
+      clients_val_value: clientsValValue,
+      clients_val_label: clientsValLabel,
       bio,
       about_me: aboutMe,
       skills,
@@ -56,18 +92,18 @@ export default function ProfilePage() {
     };
 
     try {
-      let error;
       if (profileId) {
-        ({ error } = await supabase.from('profile').update(payload).eq('id', profileId));
+        const { error } = await supabase.from('profile').update(payload).eq('id', profileId);
+        if (error) throw new Error(error.message || error.details || 'Update failed');
       } else {
         const result = await supabase.from('profile').insert(payload).select('id').single();
-        error = result.error;
+        if (result.error) throw new Error(result.error.message || result.error.details || 'Insert failed');
         if (result.data) setProfileId(result.data.id);
       }
-      if (error) throw error;
-      setToast({ message: 'Profile saved!', type: 'success' });
-    } catch (err) {
-      setToast({ message: err instanceof Error ? err.message : 'Save failed', type: 'error' });
+      setToast({ message: 'Profile & Hero content saved successfully!', type: 'success' });
+    } catch (err: any) {
+      const msg = err?.message || (typeof err === 'string' ? err : 'Save failed');
+      setToast({ message: msg, type: 'error' });
     } finally {
       setSaving(false);
     }
@@ -85,28 +121,163 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-8 max-w-4xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white">Profile & Content</h1>
-        <p className="text-gray-400 mt-1">Edit your portfolio&apos;s dynamic site content.</p>
+        <p className="text-gray-400 mt-1">Manage your Hero section, statistics, and dynamic portfolio details.</p>
       </div>
 
       <div className="space-y-8">
-        {/* Hero */}
+        {/* 1. HERO SECTION */}
         <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-          <h2 className="text-base font-semibold text-white mb-5">Hero Section</h2>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Hero Title</label>
-            <input
-              value={heroTitle}
-              onChange={(e) => setHeroTitle(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Hi, I'm Mokhtar Amr"
-            />
+          <div className="flex items-center gap-2 mb-5">
+            <span className="text-red-500 font-bold">✦</span>
+            <h2 className="text-base font-semibold text-white">Hero Section</h2>
+          </div>
+
+          <div className="space-y-5">
+            {/* Hero Title */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">Hero Title</label>
+              <input
+                value={heroTitle}
+                onChange={(e) => setHeroTitle(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Hi, I'm Mokhtar Amr"
+              />
+              <p className="text-xs text-gray-500 mt-1">Controls the greeting and name on the hero area.</p>
+            </div>
+
+            {/* Job Title (Top Bar) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                Job Title <span className="text-gray-500 text-xs">(Top-Left Corner text)</span>
+              </label>
+              <textarea
+                rows={2}
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none font-mono text-xs uppercase"
+                placeholder="WEB DESIGNER&#10;DIGITAL CREATOR"
+              />
+              <p className="text-xs text-gray-500 mt-1">Line 1 is role (red), Line 2 is sub-role (grey).</p>
+            </div>
+
+            {/* Job Title 2 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                Job Title 2 <span className="text-red-400 text-xs font-semibold">(Large Red Text under Name)</span>
+              </label>
+              <input
+                value={jobTitle2}
+                onChange={(e) => setJobTitle2(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 text-red-400 font-bold placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 uppercase tracking-wider"
+                placeholder="WEB DESIGNER & UI/UX CREATOR"
+              />
+            </div>
+
+            {/* About Paragraph */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                About Paragraph <span className="text-gray-500 text-xs">(Under Job Title 2)</span>
+              </label>
+              <textarea
+                rows={3}
+                value={aboutParagraph}
+                onChange={(e) => setAboutParagraph(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none leading-relaxed"
+                placeholder="I design and build stylish, user-focused web experiences that combine creativity with strategy..."
+              />
+            </div>
           </div>
         </section>
 
-        {/* Bio & About */}
+        {/* 2. EXPERIENCE & STATISTICS */}
+        <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <span className="text-red-500 font-bold">📊</span>
+            <h2 className="text-base font-semibold text-white">Experience & Statistics</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Stat 1: Years Experience */}
+            <div className="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl space-y-3">
+              <label className="block text-xs font-semibold text-red-400 uppercase tracking-wider">
+                1. Years of Experience
+              </label>
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Value (e.g. 3+)</span>
+                <input
+                  value={yearsExpValue}
+                  onChange={(e) => setYearsExpValue(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-sm font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="3+"
+                />
+              </div>
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Label</span>
+                <input
+                  value={yearsExpLabel}
+                  onChange={(e) => setYearsExpLabel(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Years Experience"
+                />
+              </div>
+            </div>
+
+            {/* Stat 2: Projects Completed */}
+            <div className="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl space-y-3">
+              <label className="block text-xs font-semibold text-red-400 uppercase tracking-wider">
+                2. Projects Completed
+              </label>
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Value (e.g. 40+)</span>
+                <input
+                  value={projectsValValue}
+                  onChange={(e) => setProjectsValValue(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-sm font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="40+"
+                />
+              </div>
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Label</span>
+                <input
+                  value={projectsValLabel}
+                  onChange={(e) => setProjectsValLabel(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Projects Completed"
+                />
+              </div>
+            </div>
+
+            {/* Stat 3: Happy Clients */}
+            <div className="bg-gray-800/60 border border-gray-700/60 p-4 rounded-xl space-y-3">
+              <label className="block text-xs font-semibold text-red-400 uppercase tracking-wider">
+                3. Happy Clients
+              </label>
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Value (e.g. 20+)</span>
+                <input
+                  value={clientsValValue}
+                  onChange={(e) => setClientsValValue(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-sm font-mono font-bold focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="20+"
+                />
+              </div>
+              <div>
+                <span className="text-xs text-gray-400 block mb-1">Label</span>
+                <input
+                  value={clientsValLabel}
+                  onChange={(e) => setClientsValLabel(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-red-500"
+                  placeholder="Happy Clients"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. BIO & ABOUT */}
         <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <h2 className="text-base font-semibold text-white mb-5">Bio & About</h2>
           <div className="space-y-5">
@@ -133,7 +304,7 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        {/* Skills */}
+        {/* 4. SKILLS */}
         <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <h2 className="text-base font-semibold text-white mb-5">Skills</h2>
           <TagInput
@@ -144,7 +315,7 @@ export default function ProfilePage() {
           />
         </section>
 
-        {/* Social Links */}
+        {/* 5. SOCIAL LINKS */}
         <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <h2 className="text-base font-semibold text-white mb-5">Social Links</h2>
           <div className="space-y-4">
@@ -164,12 +335,12 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        {/* Save */}
-        <div className="flex justify-end">
+        {/* Save Button */}
+        <div className="flex justify-end sticky bottom-6 z-10">
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-lg transition-colors"
+            className="px-8 py-3 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-xl transition-colors shadow-xl shadow-red-600/25"
           >
             {saving ? 'Saving…' : 'Save Changes'}
           </button>

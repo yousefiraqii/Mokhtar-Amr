@@ -55,11 +55,20 @@ export interface SocialLinks {
 
 export interface Profile {
   id: string;
-  hero_title: string | null;
-  bio: string | null;
-  about_me: string | null;
-  skills: string[] | null;
-  social_links: SocialLinks | null;
+  hero_title?: string | null;
+  job_title?: string | null;
+  job_title_2?: string | null;
+  about_paragraph?: string | null;
+  bio?: string | null;
+  about_me?: string | null;
+  skills?: string[] | null;
+  social_links?: SocialLinks | null;
+  years_exp_value?: string | null;
+  years_exp_label?: string | null;
+  projects_val_value?: string | null;
+  projects_val_label?: string | null;
+  clients_val_value?: string | null;
+  clients_val_label?: string | null;
 }
 
 export type ProjectInsert = Omit<Project, 'id' | 'created_at'>;

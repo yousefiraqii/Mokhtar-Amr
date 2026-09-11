@@ -91,7 +91,7 @@ export default async function AdminDashboard() {
           { href: '/admin/certificates', label: 'Manage Certificates', desc: 'Update your credentials' },
           { href: '/admin/volunteering', label: 'Manage Volunteering', desc: 'Add community work & photos' },
           { href: '/admin/research', label: 'Manage Research', desc: 'Publish academic & scientific papers' },
-          { href: '/admin/profile', label: 'Edit Profile', desc: 'Update bio, skills & social links' },
+          { href: '/admin/profile', label: 'Edit Profile', desc: 'Update hero, bio, skills & social links' },
         ].map((action) => (
           <Link
             key={action.href}
