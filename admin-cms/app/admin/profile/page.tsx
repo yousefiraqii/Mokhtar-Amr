@@ -2,16 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import type { Profile, SocialLinks } from '@/lib/types';
-import TagInput from '@/components/admin/TagInput';
+import type { Profile } from '@/lib/types';
 import Toast from '@/components/admin/Toast';
-
-const SOCIAL_FIELDS: { key: keyof SocialLinks; label: string; placeholder: string }[] = [
-  { key: 'github', label: 'GitHub', placeholder: 'https://github.com/username' },
-  { key: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/in/username' },
-  { key: 'twitter', label: 'Twitter / X', placeholder: 'https://twitter.com/username' },
-  { key: 'email', label: 'Email', placeholder: 'hello@example.com' },
-];
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -33,14 +25,8 @@ export default function ProfilePage() {
   const [yearsExpLabel, setYearsExpLabel] = useState('Years Experience');
   const [projectsValValue, setProjectsValValue] = useState('40+');
   const [projectsValLabel, setProjectsValLabel] = useState('Projects Completed');
-  const [clientsValValue, setClientsValValue] = useState('20+');
+const [clientsValValue, setClientsValValue] = useState('20+');
   const [clientsValLabel, setClientsValLabel] = useState('Happy Clients');
-
-  // 3. Bio & About
-  const [bio, setBio] = useState('');
-  const [aboutMe, setAboutMe] = useState('');
-  const [skills, setSkills] = useState<string[]>([]);
-  const [socialLinks, setSocialLinks] = useState<SocialLinks>({});
 
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
@@ -60,12 +46,7 @@ export default function ProfilePage() {
       if (p.projects_val_value !== undefined && p.projects_val_value !== null) setProjectsValValue(p.projects_val_value);
       if (p.projects_val_label !== undefined && p.projects_val_label !== null) setProjectsValLabel(p.projects_val_label);
       if (p.clients_val_value !== undefined && p.clients_val_value !== null) setClientsValValue(p.clients_val_value);
-      if (p.clients_val_label !== undefined && p.clients_val_label !== null) setClientsValLabel(p.clients_val_label);
-
-      setBio(p.bio ?? '');
-      setAboutMe(p.about_me ?? '');
-      setSkills(p.skills ?? []);
-      setSocialLinks(p.social_links ?? {});
+if (p.clients_val_label !== undefined && p.clients_val_label !== null) setClientsValLabel(p.clients_val_label);
     }
     setLoading(false);
   }, [supabase]);
@@ -83,12 +64,8 @@ export default function ProfilePage() {
       years_exp_label: yearsExpLabel,
       projects_val_value: projectsValValue,
       projects_val_label: projectsValLabel,
-      clients_val_value: clientsValValue,
+clients_val_value: clientsValValue,
       clients_val_label: clientsValLabel,
-      bio,
-      about_me: aboutMe,
-      skills,
-      social_links: socialLinks,
     };
 
     try {
@@ -275,65 +252,7 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-        </section>
-
-        {/* 3. BIO & ABOUT */}
-        <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-          <h2 className="text-base font-semibold text-white mb-5">Bio & About</h2>
-          <div className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Bio (short)</label>
-              <textarea
-                rows={2}
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                placeholder="Short tagline or role description"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">About Me</label>
-              <textarea
-                rows={6}
-                value={aboutMe}
-                onChange={(e) => setAboutMe(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                placeholder="Tell your story — background, passions, what you're working on…"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* 4. SKILLS */}
-        <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-          <h2 className="text-base font-semibold text-white mb-5">Skills</h2>
-          <TagInput
-            value={skills}
-            onChange={setSkills}
-            label="Skills (press Enter or comma to add)"
-            placeholder="React, Python, Figma…"
-          />
-        </section>
-
-        {/* 5. SOCIAL LINKS */}
-        <section className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-          <h2 className="text-base font-semibold text-white mb-5">Social Links</h2>
-          <div className="space-y-4">
-            {SOCIAL_FIELDS.map(({ key, label, placeholder }) => (
-              <div key={key}>
-                <label className="block text-sm font-medium text-gray-300 mb-2">{label}</label>
-                <input
-                  value={socialLinks[key] ?? ''}
-                  onChange={(e) =>
-                    setSocialLinks((prev) => ({ ...prev, [key]: e.target.value }))
-                  }
-                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder={placeholder}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
+</section>
 
         {/* Save Button */}
         <div className="flex justify-end sticky bottom-6 z-10">
