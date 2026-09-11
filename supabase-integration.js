@@ -42,50 +42,53 @@
       if (grid) {
         let html = '';
         projects.forEach((p, idx) => {
-          const indexStr = String(idx + 1).padStart(2, '0');
-          const imageUrl = p.image_url || '';
-          const hasImage = Boolean(imageUrl);
-          
-          let tagsHtml = '';
-          if (p.tags && Array.isArray(p.tags) && p.tags.length > 0) {
-            tagsHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;">' + 
-              p.tags.map(t => '<span style="font-size:11px;padding:3px 8px;background:rgba(255,255,255,0.06);border:1px solid var(--line);border-radius:4px;color:var(--grey);">' + escapeHtml(t) + '</span>').join('') + 
-              '</div>';
-          }
+          const num = p.project_number ? String(p.project_number) : String(idx + 1).padStart(2, '0');
+          const photo1 = p.image_url || '';
+          const photo2 = p.image_url_2 || '';
+          const hasPhoto1 = Boolean(photo1);
+          const hasPhoto2 = Boolean(photo2);
+          const pdfLink = p.pdf_url || p.demo_url || '';
 
-          let actionsHtml = '<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">';
-          if (p.demo_url) {
-            actionsHtml += '<a class="btn-solid" href="' + escapeHtml(p.demo_url) + '" target="_blank" rel="noopener">Live Demo</a>';
-          }
-          if (p.github_url) {
-            actionsHtml += '<a class="btn-outline" href="' + escapeHtml(p.github_url) + '" target="_blank" rel="noopener">GitHub</a>';
-          }
-          if (!p.demo_url && !p.github_url) {
-            actionsHtml += '<span class="btn-outline" style="cursor:default;opacity:0.6;">Featured Project</span>';
-          }
-          actionsHtml += '</div>';
+          const isSinglePhoto = (hasPhoto1 && !hasPhoto2) || (!hasPhoto1 && hasPhoto2);
 
-          html += `
-            <article class="project-card reveal is-in">
-              <div class="project-photos ${hasImage ? 'single' : ''}">
-                ${hasImage ? `
+          let photosHtml = '';
+          if (hasPhoto1 || hasPhoto2) {
+            photosHtml = `
+              <div class="project-photos ${isSinglePhoto ? 'single' : ''}">
+                ${hasPhoto1 ? `
                   <div>
-                    <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async"
+                    <img src="${escapeHtml(photo1)}" alt="${escapeHtml(p.title)} — photo 1" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>${escapeHtml(p.title)}</span></div>
                   </div>
-                ` : `
+                ` : ''}
+                ${hasPhoto2 ? `
                   <div>
-                    <div class="img-fallback" style="display:flex;"><span class="ico">📁</span><strong>${escapeHtml(p.title)}</strong></div>
+                    <img src="${escapeHtml(photo2)}" alt="${escapeHtml(p.title)} — photo 2" loading="lazy" decoding="async"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="img-fallback"><span class="ico">🖼️</span><strong>Photo 2</strong><span>${escapeHtml(p.title)}</span></div>
                   </div>
-                `}
+                ` : ''}
               </div>
+            `;
+          } else {
+            photosHtml = `
+              <div class="project-photos single">
+                <div>
+                  <div class="img-fallback" style="display:flex;"><span class="ico">📁</span><strong>${escapeHtml(p.title)}</strong></div>
+                </div>
+              </div>
+            `;
+          }
+
+          html += `
+            <article class="project-card reveal is-in">
+              ${photosHtml}
               <div class="project-body">
-                <div class="project-index">${indexStr}</div>
+                <div class="project-index">${escapeHtml(num)}</div>
                 <div class="project-title">${escapeHtml(p.title)}</div>
                 <p class="project-desc">${escapeHtml(p.description || p.long_description || '')}</p>
-                ${tagsHtml}
-                ${actionsHtml}
+                ${pdfLink ? `<a class="btn-solid" href="${escapeHtml(pdfLink)}" target="_blank" rel="noopener">View Details</a>` : ''}
               </div>
             </article>
           `;

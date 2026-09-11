@@ -1,16 +1,19 @@
-// Shared TypeScript types matching the Supabase database schema
+﻿// Shared TypeScript types matching the Supabase database schema
 
 export interface Project {
   id: string;
+  project_number?: string | null;
   title: string;
   description: string | null;
-  long_description: string | null;
-  image_url: string | null;
-  tags: string[] | null;
-  demo_url: string | null;
-  github_url: string | null;
-  featured: boolean;
-  created_at: string;
+  long_description?: string | null;
+  image_url?: string | null;      // Photo 1 (Cover)
+  image_url_2?: string | null;    // Photo 2
+  pdf_url?: string | null;        // PDF document / Details link
+  demo_url?: string | null;
+  github_url?: string | null;
+  tags?: string[] | null;
+  featured?: boolean;
+  created_at?: string;
 }
 
 export interface Certificate {
