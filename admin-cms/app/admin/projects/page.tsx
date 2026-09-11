@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -87,17 +87,18 @@ export default function ProjectsPage() {
 
       if (editingId) {
         const { error } = await supabase.from('projects').update(payload).eq('id', editingId);
-        if (error) throw error;
+        if (error) throw new Error(error.message || error.details || 'Update failed');
         setToast({ message: 'Project updated!', type: 'success' });
       } else {
         const { error } = await supabase.from('projects').insert(payload);
-        if (error) throw error;
+        if (error) throw new Error(error.message || error.details || 'Insert failed');
         setToast({ message: 'Project created!', type: 'success' });
       }
       setShowModal(false);
       fetchProjects();
-    } catch (err) {
-      setToast({ message: err instanceof Error ? err.message : 'Save failed', type: 'error' });
+    } catch (err: any) {
+      const msg = err?.message || (typeof err === 'string' ? err : 'Save failed');
+      setToast({ message: msg, type: 'error' });
     } finally {
       setSaving(false);
     }
