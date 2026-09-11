@@ -35,6 +35,16 @@ export interface VolunteerActivity {
   created_at?: string;
 }
 
+export interface ResearchPaper {
+  id: string;
+  title: string;
+  category?: string | null;      // Small red title (e.g. ENGINEERING PROJECT, RESEARCH PAPER)
+  description?: string | null;
+  image_url?: string | null;     // Cover photo
+  pdf_url?: string | null;       // PDF Document for "READ PAPER"
+  created_at?: string;
+}
+
 export interface SocialLinks {
   github?: string;
   linkedin?: string;
@@ -55,4 +65,5 @@ export interface Profile {
 export type ProjectInsert = Omit<Project, 'id' | 'created_at'>;
 export type CertificateInsert = Omit<Certificate, 'id' | 'created_at'>;
 export type VolunteerActivityInsert = Omit<VolunteerActivity, 'id' | 'created_at'>;
+export type ResearchPaperInsert = Omit<ResearchPaper, 'id' | 'created_at'>;
 export type ProfileInsert = Omit<Profile, 'id'>;

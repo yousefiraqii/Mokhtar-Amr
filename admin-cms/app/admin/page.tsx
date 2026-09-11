@@ -5,10 +5,11 @@ export default async function AdminDashboard() {
   const supabase = await createClient();
 
   // Fetch counts
-  const [{ count: projectCount }, { count: certCount }, { count: volunteerCount }] = await Promise.all([
+  const [{ count: projectCount }, { count: certCount }, { count: volunteerCount }, { count: paperCount }] = await Promise.all([
     supabase.from('projects').select('*', { count: 'exact', head: true }),
     supabase.from('certificates').select('*', { count: 'exact', head: true }),
     supabase.from('volunteering').select('*', { count: 'exact', head: true }),
+    supabase.from('research_papers').select('*', { count: 'exact', head: true }),
   ]);
 
   const stats = [
@@ -45,6 +46,17 @@ export default async function AdminDashboard() {
         </svg>
       ),
     },
+    {
+      label: 'Research Papers',
+      value: paperCount ?? 0,
+      href: '/admin/research',
+      color: 'from-amber-600 to-amber-800',
+      icon: (
+        <svg className="w-8 h-8 text-amber-200" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+        </svg>
+      ),
+    },
   ];
 
   return (
@@ -55,7 +67,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -73,11 +85,12 @@ export default async function AdminDashboard() {
 
       {/* Quick Actions */}
       <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {[
           { href: '/admin/projects', label: 'Manage Projects', desc: 'Add, edit or remove projects' },
           { href: '/admin/certificates', label: 'Manage Certificates', desc: 'Update your credentials' },
           { href: '/admin/volunteering', label: 'Manage Volunteering', desc: 'Add community work & photos' },
+          { href: '/admin/research', label: 'Manage Research', desc: 'Publish academic & scientific papers' },
           { href: '/admin/profile', label: 'Edit Profile', desc: 'Update bio, skills & social links' },
         ].map((action) => (
           <Link

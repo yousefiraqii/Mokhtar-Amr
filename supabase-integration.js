@@ -200,6 +200,50 @@
     console.warn('[Supabase] Error loading volunteering:', err);
   }
 
+  // 5. Fetch Research Papers & Render
+  try {
+    const { data: papers, error: papersError } = await supabase
+      .from('research_papers')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!papersError && papers && papers.length > 0) {
+      const researchGrid = document.querySelector('.research-grid');
+      if (researchGrid) {
+        let html = '';
+        papers.forEach((p) => {
+          const coverUrl = p.image_url || '';
+          const hasCover = Boolean(coverUrl);
+          const category = p.category || 'RESEARCH PAPER';
+          const pdfLink = p.pdf_url || '';
+
+          html += `
+            <article class="research-card reveal is-in">
+              <div class="research-cover">
+                ${hasCover ? `
+                  <img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(p.title)} cover" loading="lazy" decoding="async"
+                       onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                  <div class="img-fallback"><span class="ico">📄</span><strong>Cover</strong></div>
+                ` : `
+                  <div class="img-fallback" style="display:flex;"><span class="ico">📄</span><strong>Cover</strong></div>
+                `}
+              </div>
+              <div class="research-content">
+                <div class="research-venue">${escapeHtml(category)}</div>
+                <div class="research-title">${escapeHtml(p.title)}</div>
+                <p class="research-desc">${escapeHtml(p.description || '')}</p>
+                ${pdfLink ? `<a class="btn-outline" href="${escapeHtml(pdfLink)}" target="_blank" rel="noopener">Read Paper</a>` : ''}
+              </div>
+            </article>
+          `;
+        });
+        researchGrid.innerHTML = html;
+      }
+    }
+  } catch (err) {
+    console.warn('[Supabase] Error loading research papers:', err);
+  }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str)
