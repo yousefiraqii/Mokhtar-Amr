@@ -592,7 +592,10 @@
         height: auto;
         min-height: 100vh;
         min-height: 100svh;
-        padding-bottom: 48px;
+        /* Reserve one visual stage for the word + portrait.  Neither layer
+           participates in document flow, so the portrait can overlap the
+           typography instead of being pushed beneath it. */
+        padding: clamp(408px, 123vw, 548px) 0 48px;
         overflow-x: clip;
       }
 
@@ -619,14 +622,14 @@
       .giant-word {
         position: absolute;
         z-index: 1;
-        top: clamp(64px, 12vh, 120px);
+        top: clamp(62px, 13vw, 92px);
         left: 50%;
         transform: translateX(-50%);
         width: 100vw;
         max-width: none;
-        font-size: clamp(64px, 24vw, 128px);
-        line-height: 1;
-        letter-spacing: -1px;
+        font-size: clamp(72px, 25vw, 118px);
+        line-height: 0.9;
+        letter-spacing: -1.5px;
         padding: 0;
         text-align: center;
         animation: none;
@@ -634,18 +637,19 @@
       }
 
       .portrait-wrap {
-        position: relative;
+        position: absolute;
         z-index: 2;
-        left: auto;
-        right: auto;
+        top: clamp(36px, 9vw, 52px);
+        left: 0;
+        right: 0;
         bottom: auto;
         transform: none;
-        height: clamp(320px, 56svh, 500px);
+        height: clamp(360px, 112vw, 482px);
         width: 100%;
         display: flex;
         justify-content: center;
         align-items: flex-end;
-        margin-top: clamp(20px, 4vh, 44px);
+        margin: 0;
         animation: fadeInUp 0.9s 0.35s var(--ease) forwards;
       }
 
