@@ -12,7 +12,37 @@ const EMPTY_FORM: CertificateInsert = {
   title: '',
   description: '',
   image_url: '',
+  issuer: '',
+  issue_date: '',
+  credential_id: '',
+  category: '',
+  achievement: '',
+  skills: [],
 };
+
+function TextField({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-2">{label}</label>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
 
 export default function CertificatesPage() {
   const supabase = createClient();
@@ -60,6 +90,12 @@ export default function CertificatesPage() {
       title: c.title,
       description: c.description ?? '',
       image_url: c.image_url ?? '',
+      issuer: c.issuer ?? '',
+      issue_date: c.issue_date ?? '',
+      credential_id: c.credential_id ?? '',
+      category: c.category ?? '',
+      achievement: c.achievement ?? '',
+      skills: c.skills ?? [],
     });
     setEditingId(c.id);
     setShowModal(true);
@@ -69,12 +105,21 @@ export default function CertificatesPage() {
     if (!form.title.trim()) return;
     setSaving(true);
     try {
+      const payload: CertificateInsert = {
+        ...form,
+        skills: Array.isArray(form.skills)
+          ? form.skills.map((s) => s.trim()).filter(Boolean)
+          : String(form.skills ?? '')
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean),
+      };
       if (editingId) {
-        const { error } = await supabase.from('certificates').update(form).eq('id', editingId);
+        const { error } = await supabase.from('certificates').update(payload).eq('id', editingId);
         if (error) throw error;
         setToast({ message: 'Certificate updated!', type: 'success' });
       } else {
-        const { error } = await supabase.from('certificates').insert(form);
+        const { error } = await supabase.from('certificates').insert(payload);
         if (error) throw error;
         setToast({ message: 'Certificate added!', type: 'success' });
       }
@@ -102,7 +147,7 @@ export default function CertificatesPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -195,14 +240,44 @@ export default function CertificatesPage() {
                   placeholder="One sentence shown under the title"
                 />
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <TextField label="Issuing Organization" value={form.issuer ?? ''} onChange={(v) => setForm((f) => ({ ...f, issuer: v }))} placeholder="e.g. Tech Innovation Challenge" />
+                <TextField label="Issue Date" value={form.issue_date ?? ''} onChange={(v) => setForm((f) => ({ ...f, issue_date: v }))} placeholder="e.g. 2026" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <TextField label="Category" value={form.category ?? ''} onChange={(v) => setForm((f) => ({ ...f, category: v }))} placeholder="e.g. Sustainability & Climate Change" />
+                <TextField label="Achievement / Rank" value={form.achievement ?? ''} onChange={(v) => setForm((f) => ({ ...f, achievement: v }))} placeholder="e.g. 2nd Place, Finalist" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Credential ID</label>
+                <input
+                  value={form.credential_id ?? ''}
+                  onChange={(e) => setForm((f) => ({ ...f, credential_id: e.target.value }))}
+                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Optional verification ID printed on the certificate"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Skills (comma separated)</label>
+                <input
+                  value={Array.isArray(form.skills) ? form.skills.join(', ') : ''}
+                  onChange={(e) => setForm((f) => ({ ...f, skills: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) }))}
+                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="e.g. Innovation, Teamwork, Water Treatment"
+                />
+              </div>
             </div>
 
             <div className="sticky bottom-0 bg-gray-900 border-t border-gray-800 px-6 py-4 flex justify-end gap-3">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">Cancel</button>
+              <button onClick={() => setShowModal(false)} className="px-4 py-2 max-md:min-h-11 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors">Cancel</button>
               <button
                 onClick={handleSave}
                 disabled={saving || !form.title.trim()}
-                className="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-lg transition-colors"
+                className="px-5 py-2 max-md:min-h-11 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-lg transition-colors"
               >
                 {saving ? 'Saving…' : editingId ? 'Update' : 'Add Certificate'}
               </button>

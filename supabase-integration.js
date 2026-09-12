@@ -182,7 +182,7 @@ if (profile) {
           const title = c.title || `Certificate ${idx + 1}`;
 
           html += `
-            <button type="button" class="cert-card reveal is-in" data-caption="${escapeHtml(title)}" aria-label="Open certificate ${escapeHtml(title)}">
+            <button type="button" class="cert-card reveal is-in" data-cert-id="${escapeHtml(c.id)}" data-caption="${escapeHtml(title)}" aria-label="Open certificate ${escapeHtml(title)}">
               <span class="cert-photo">
                 ${imageUrl ? `
                   <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(title)}" loading="lazy"

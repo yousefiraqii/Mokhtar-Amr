@@ -22,6 +22,12 @@ export interface Certificate {
   description: string | null;
   image_url: string | null;
   created_at: string;
+  issuer?: string | null;
+  issue_date?: string | null;
+  credential_id?: string | null;
+  category?: string | null;
+  achievement?: string | null;
+  skills?: string[] | null;
 }
 
 export interface VolunteerActivity {

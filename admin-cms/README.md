@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mokhtar Amr — Portfolio Admin CMS
 
-## Getting Started
+Next.js (App Router) admin app that powers the public portfolio data and the
+AI-powered ATS CV generator.
 
-First, run the development server:
+## Pages
+
+| Route                 | Purpose                                                            |
+| --------------------- | ------------------------------------------------------------------ |
+| `/admin`              | Dashboard with data counts and an in-app AI chat assistant        |
+| `/admin/login`        | Auth (supabase-auth-helpers, cookie session)                       |
+| `/admin/profile`      | Edit profile/job titles/statistics                                 |
+| `/admin/projects`     | Edit projects + PDF links                                          |
+| `/admin/certificates` | Edit certificates (issuer, date, credential ID, category, skills)  |
+| `/admin/research`     | Edit papers                                                       |
+| `/admin/volunteering` | Edit volunteer activities                                         |
+| `/api/ats-cv`         | POST — generates a job-targeted ATS CV (see below)                 |
+| `/api/auth/callback`  | Auth callback                                                      |
+
+## API: ATS CV generator
+
+`POST /api/ats-cv` with JSON `{ "jobDescription": "<job posting text>" }`
+returns a CV optimized for that posting. Per request: fetches the Supabase
+portfolio data, parses the posting with Gemini (`gemini-3.6-flash`, JSON mode),
+reranks skills/certificates/projects against the job, computes ATS match
+metrics, then renders an HTML document (served as JSON-safe HTML and also
+available as a PDF via the client). If the model call fails the server still
+returns a usable CV with `usedModel: "fallback"`.
+
+Auth: disabled in dev; in production requests require the
+`X-Auth-Key` header matching `ATS_CV_KEY`.
+
+## Environment variables (`.env.local`)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=            # public site + admin share these
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=           # server-only (admin pages, ATS CV)
+DATABASE_PASSWORD=                   # allowed for local db (psql) scripts
+GEMINI_API_KEY=                      # used by /api/ats-cv
+ATS_CV_KEY=                          # shared secret for the ATS CV API
+NEXT_PUBLIC_SITE_URL=                # public portfolio origin (default localhost:5500)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The schema/seed can be pushed to the main Supabase project with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run db:push    # pushes schema to the main default Supabase project
+npm run db:seed    # loads seed data (36 certificates, 6 projects, …)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Commands
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev        # dev server on http://localhost:3000
+npm run build      # production build (with type checking)
+npm run start      # serve the production build
+npm run gen:types  # regenerate supabase database types
+```

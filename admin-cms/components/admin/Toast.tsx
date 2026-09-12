@@ -16,9 +16,9 @@ export default function Toast({ message, type = 'success', onDismiss, duration =
   }, [onDismiss, duration]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed inset-x-4 bottom-4 z-50 sm:inset-x-auto sm:bottom-6 sm:right-6 animate-in slide-in-from-bottom-4 duration-300">
       <div
-        className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium border ${
+        className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium border w-full sm:w-auto max-w-full sm:max-w-md ${
           type === 'success'
             ? 'bg-emerald-950 border-emerald-700 text-emerald-300'
             : 'bg-red-950 border-red-700 text-red-300'

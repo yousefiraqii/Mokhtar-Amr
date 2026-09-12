@@ -125,7 +125,7 @@ const { data, error } = await supabase
   }
 
   return (
-    <div className="p-8">
+<div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -157,8 +157,8 @@ const { data, error } = await supabase
           <p className="text-sm mt-1">Click &quot;Add Project&quot; to add your first project with photos, number, description, and PDF details.</p>
         </div>
       ) : (
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
+<div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-x-auto">
+          <table className="w-full text-sm min-w-[760px]">
             <thead className="border-b border-gray-800 bg-gray-950/40">
               <tr className="text-left text-gray-400">
                 <th className="px-5 py-3 font-medium w-16">No.</th>
@@ -220,7 +220,7 @@ const { data, error } = await supabase
                           href={pdf}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 bg-red-600/10 border border-red-500/30 text-red-400 hover:text-red-300 hover:border-red-500 text-xs px-2.5 py-1 rounded-md transition-colors"
+                          className="inline-flex items-center gap-1.5 bg-red-600/10 border border-red-500/30 text-red-400 hover:text-red-300 hover:border-red-500 text-xs px-2.5 py-1 max-md:px-3 max-md:py-2 rounded-md transition-colors"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -237,13 +237,13 @@ const { data, error } = await supabase
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => openEdit(p)}
-                          className="text-gray-300 hover:text-white px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-xs transition-colors"
+                          className="text-gray-300 hover:text-white px-2.5 py-1 max-md:px-3 max-md:py-2 rounded bg-gray-800 hover:bg-gray-700 text-xs transition-colors"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => setDeleteTarget(p)}
-                          className="text-red-400 hover:text-red-300 px-2.5 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-xs transition-colors"
+                          className="text-red-400 hover:text-red-300 px-2.5 py-1 max-md:px-3 max-md:py-2 rounded bg-red-500/10 hover:bg-red-500/20 text-xs transition-colors"
                         >
                           Delete
                         </button>
@@ -346,7 +346,7 @@ const { data, error } = await supabase
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                className="px-4 py-2 max-md:min-h-11 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -354,7 +354,7 @@ const { data, error } = await supabase
                 type="button"
                 onClick={handleSave}
                 disabled={saving || !form.title.trim()}
-                className="px-5 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-lg transition-colors shadow-lg shadow-red-600/20"
+                className="px-5 py-2 max-md:min-h-11 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-lg transition-colors shadow-lg shadow-red-600/20"
               >
                 {saving ? 'Saving…' : editingId ? 'Update Project' : 'Create Project'}
               </button>

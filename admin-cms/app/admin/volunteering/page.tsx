@@ -107,7 +107,7 @@ const { data, error } = await supabase
   }
 
   return (
-    <div className="p-8">
+<div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -254,7 +254,7 @@ const { data, error } = await supabase
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                className="px-4 py-2 max-md:min-h-11 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -262,7 +262,7 @@ const { data, error } = await supabase
                 type="button"
                 onClick={handleSave}
                 disabled={saving || !form.title.trim()}
-                className="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-lg transition-colors shadow-lg shadow-indigo-600/20"
+                className="px-5 py-2 max-md:min-h-11 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-lg transition-colors shadow-lg shadow-indigo-600/20"
               >
                 {saving ? 'Saving…' : editingId ? 'Update Activity' : 'Create Activity'}
               </button>

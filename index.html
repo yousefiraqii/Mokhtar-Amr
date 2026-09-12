@@ -1451,9 +1451,81 @@
       letter-spacing: 0.5px;
     }
     .cv-loading { text-align: center; padding: 40px 0; color: var(--grey); }
+    .cv-progress { padding: 16px clamp(26px, 5vw, 48px) 0; }
+    .cv-steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+    .cv-steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 3px 0 3px 30px;
+      font-size: 11.5px;
+      color: #999;
+      letter-spacing: 0.3px;
+    }
+    .cv-steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      color: #999;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cv-steps li.done { color: #222; }
+    .cv-steps li.done::before { border-color: var(--red); color: var(--red); content: '✓'; }
+    .cv-steps li.active { color: var(--red); font-weight: 700; }
+    .cv-job { padding: 14px clamp(26px, 5vw, 48px) 0; }
+    .cv-job-label { display: block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #555; font-weight: 700; margin-bottom: 6px; }
+    .cv-job textarea {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 12px;
+      color: #222;
+      resize: vertical;
+      background: #fff;
+    }
+    .cv-job textarea:focus { outline: none; border-color: var(--red); }
+    .cv-ats { padding: 16px clamp(26px, 5vw, 48px) 4px; font-size: 12px; color: #222; }
+    .cv-ats h3 { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 8px; }
+    .cv-ats .score { font-size: 26px; font-weight: 800; }
+    .cv-ats ul { margin: 6px 0 12px; padding-left: 18px; }
+    .cv-ats li { margin: 2px 0; }
+    .cv-row .cv-link { color: var(--red); text-decoration: none; font-size: 11.5px; font-weight: 600; }
+    .cv-row .cv-link:hover { text-decoration: underline; }
+    .cv-bullets { margin: 5px 0 0; padding-left: 18px; }
+    .cv-bullets li { font-size: 11.5px; color: #222; margin: 2px 0; }
+    .cv-summary-editor { width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px 12px; font: inherit; font-size: 12px; color: #222; }
+    .cv-error { color: #b00020; font-size: 12px; }
+    .cv-notice-msg { color: #b00020; font-size: 11px; padding: 4px 0 0; }
     @media (max-width: 760px) {
+      .cv-overlay { padding: 12px; }
+      .cv-modal { max-height: 92vh; }
       .cv-head { flex-direction: column; }
       .cv-contact { text-align: left; }
+      .cv-actions { flex-wrap: wrap; }
+      .cv-btn { flex: 1 1 auto; }
+      .cv-close {
+        position: sticky;
+        top: 0;
+        margin-left: auto;
+        margin-right: 12px;
+        margin-top: 12px;
+        width: 40px;
+        height: 40px;
+        background: #0a0a0a;
+        z-index: 5;
+      }
+      .cv-notice { position: static; }
     }
 
     /* ===== ANCHOR OFFSET FOR STICKY NAV ===== */
@@ -1480,7 +1552,7 @@
         transform: none;
         width: 100%;
       }
-      .cv-close, .cv-actions, .cv-notice, .cv-loading { display: none !important; }
+      .cv-close, .cv-actions, .cv-notice, .cv-loading, .cv-progress, .cv-job, .cv-ats { display: none !important; }
     }
 
     /* ===== REDUCED MOTION ===== */
@@ -1514,7 +1586,7 @@
         <a href="#research">Research</a>
       </div>
       <div class="nav-actions">
-        <button type="button" class="nav-cv" id="navCvBtn" aria-haspopup="dialog">Download ATS CV</button>
+        <button type="button" class="nav-cv" id="navCvBtn" aria-haspopup="dialog">Generate ATS CV</button>
         <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primaryNav">☰</button>
       </div>
     </div>
@@ -1603,12 +1675,12 @@
         <article class="project-card reveal">
           <div class="project-photos">
             <div>
-              <img src="Pojects/Project 1/photo_2026-09-11_20-12-22.jpg" alt="AquaPure — cover photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_1/photo_2026-09-11_20-12-22.jpg" alt="AquaPure — cover photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>Project 1</span></div>
             </div>
             <div>
-              <img src="Pojects/Project 1/photo_2026-09-11_20-12-30.jpg" alt="AquaPure — second photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_1/photo_2026-09-11_20-12-30.jpg" alt="AquaPure — second photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Photo 2</strong><span>Project 1</span></div>
             </div>
@@ -1617,7 +1689,7 @@
             <div class="project-index">01</div>
             <div class="project-title">AquaPure — Low-Cost Multi-Stage Water Filtration System</div>
             <p class="project-desc">A 4-stage purification system that turns polluted canal water into safe drinking water using activated carbon from agricultural waste, electrocoagulation with recycled aluminum, natural coagulation with Moringa seeds, and UV-C sterilization. Built entirely from locally sourced and recycled materials to keep it affordable for rural households.</p>
-            <a class="btn-solid" href="Pojects/Project 1/AquaPure_Integrated_Natural_Filtration_and_Desalination_System_1.pdf" target="_blank" rel="noopener">View Details</a>
+            <a class="btn-solid" href="Pojects/Project_1/AquaPure_Integrated_Natural_Filtration_and_Desalination_System_1.pdf" target="_blank" rel="noopener">View Details</a>
           </div>
         </article>
 
@@ -1625,12 +1697,12 @@
         <article class="project-card reveal">
           <div class="project-photos">
             <div>
-              <img src="Pojects/Project 2/photo_2026-09-11_20-13-15.jpg" alt="SABIL — cover photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_2/photo_2026-09-11_20-13-15.jpg" alt="SABIL — cover photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>Project 2</span></div>
             </div>
             <div>
-              <img src="Pojects/Project 2/photo_2026-09-11_20-13-32.jpg" alt="SABIL — second photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_2/photo_2026-09-11_20-13-32.jpg" alt="SABIL — second photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Photo 2</strong><span>Project 2</span></div>
             </div>
@@ -1639,7 +1711,7 @@
             <div class="project-index">02</div>
             <div class="project-title">SABIL — Smart Automated Bot for Irrigation &amp; Land Reclamation</div>
             <p class="project-desc">An autonomous agricultural robot that performs plowing, seed dispensing, precision irrigation, and harvesting on a single solar-powered chassis. It uses soil moisture, gas, and environmental sensors with AI-based decision logic to apply the exact amount of water each plant needs and to assess land suitability before cultivation.</p>
-            <a class="btn-solid" href="Pojects/Project 2/proposal_260701_161429-1.pdf" target="_blank" rel="noopener">View Details</a>
+            <a class="btn-solid" href="Pojects/Project_2/proposal_260701_161429-1.pdf" target="_blank" rel="noopener">View Details</a>
           </div>
         </article>
 
@@ -1647,12 +1719,12 @@
         <article class="project-card reveal">
           <div class="project-photos">
             <div>
-              <img src="Pojects/Project 3/photo_2026-09-11_20-13-57.jpg" alt="Green Energy — cover photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_3/photo_2026-09-11_20-13-57.jpg" alt="Green Energy — cover photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>Project 3</span></div>
             </div>
             <div>
-              <img src="Pojects/Project 3/photo_2026-09-11_20-14-09.jpg" alt="Green Energy — second photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_3/photo_2026-09-11_20-14-09.jpg" alt="Green Energy — second photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Photo 2</strong><span>Project 3</span></div>
             </div>
@@ -1661,7 +1733,7 @@
             <div class="project-index">03</div>
             <div class="project-title">Green Energy — Hybrid Hydroelectric + Thermoelectric System</div>
             <p class="project-desc">A dual-source renewable energy system that generates electricity from two inputs at once: a cross-flow turbine driven by flowing water, and Peltier modules that convert the temperature difference between sun-heated and water-cooled surfaces into power. The two outputs are combined and regulated into a battery.</p>
-            <a class="btn-solid" href="Pojects/Project 3/Poster 17107 (2).pdf" target="_blank" rel="noopener">View Details</a>
+            <a class="btn-solid" href="Pojects/Project_3/Poster_17107_(2).pdf" target="_blank" rel="noopener">View Details</a>
           </div>
         </article>
 
@@ -1669,12 +1741,12 @@
         <article class="project-card reveal">
           <div class="project-photos">
             <div>
-              <img src="Pojects/Project 4/photo_2026-09-11_20-15-05.jpg" alt="E-Waste Absorbance Meter — cover photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_4/photo_2026-09-11_20-15-05.jpg" alt="E-Waste Absorbance Meter — cover photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>Project 4</span></div>
             </div>
             <div>
-              <img src="Pojects/Project 4/photo_2026-09-11_20-15-12.jpg" alt="E-Waste Absorbance Meter — second photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_4/photo_2026-09-11_20-15-12.jpg" alt="E-Waste Absorbance Meter — second photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Photo 2</strong><span>Project 4</span></div>
             </div>
@@ -1683,7 +1755,7 @@
             <div class="project-index">04</div>
             <div class="project-title">E-Waste Absorbance Meter</div>
             <p class="project-desc">A portable spectrophotometer built from discarded electronics that measures the concentration of a liquid sample by passing light through it and reading how much is absorbed. It applies the Beer-Lambert law to convert the light reading into concentration, with no need for a lab.</p>
-            <a class="btn-solid" href="Pojects/Project 4/Poster 17212 (2).pdf" target="_blank" rel="noopener">View Details</a>
+            <a class="btn-solid" href="Pojects/Project_4/Poster_17212_(2).pdf" target="_blank" rel="noopener">View Details</a>
           </div>
         </article>
 
@@ -1691,12 +1763,12 @@
         <article class="project-card reveal">
           <div class="project-photos">
             <div>
-              <img src="Pojects/Project 5/photo_2026-09-11_20-15-37.jpg" alt="Smart Greenhouse — cover photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_5/photo_2026-09-11_20-15-37.jpg" alt="Smart Greenhouse — cover photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>Project 5</span></div>
             </div>
             <div>
-              <img src="Pojects/Project 5/photo_2026-09-11_20-15-45.jpg" alt="Smart Greenhouse — second photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_5/photo_2026-09-11_20-15-45.jpg" alt="Smart Greenhouse — second photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Photo 2</strong><span>Project 5</span></div>
             </div>
@@ -1705,7 +1777,7 @@
             <div class="project-index">05</div>
             <div class="project-title">Smart Greenhouse Automation System</div>
             <p class="project-desc">A closed-loop greenhouse that continuously monitors temperature, humidity, soil moisture, and light intensity, then automatically activates Peltier cooling, fans, humidifiers, drip irrigation, and LED lighting to keep conditions within optimal ranges. It runs autonomously and streams live readings to a phone via Bluetooth.</p>
-            <a class="btn-solid" href="Pojects/Project 5/Group 17211.pdf" target="_blank" rel="noopener">View Details</a>
+            <a class="btn-solid" href="Pojects/Project_5/Group_17211.pdf" target="_blank" rel="noopener">View Details</a>
           </div>
         </article>
 
@@ -1713,7 +1785,7 @@
         <article class="project-card reveal">
           <div class="project-photos single">
             <div>
-              <img src="Pojects/Project 6/1.jpg" alt="N Truss Vertical Lift Bridge — cover photo" loading="lazy" decoding="async"
+              <img src="Pojects/Project_6/1.jpg" alt="N Truss Vertical Lift Bridge — cover photo" loading="lazy" decoding="async"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
               <div class="img-fallback"><span class="ico">🖼️</span><strong>Cover photo</strong><span>Project 6</span></div>
             </div>
@@ -1722,7 +1794,7 @@
             <div class="project-index">06</div>
             <div class="project-title">N Truss Vertical Lift Bridge</div>
             <p class="project-desc">A movable bridge design using an N-truss structure and a vertical lift mechanism, allowing water traffic to pass while road traffic keeps flowing. The design focuses on load distribution, structural stability, and reducing urban congestion caused by fixed bridges.</p>
-            <a class="btn-solid" href="Pojects/Project 6/17101 (2).pdf" target="_blank" rel="noopener">View Details</a>
+            <a class="btn-solid" href="Pojects/Project_6/17101_(2).pdf" target="_blank" rel="noopener">View Details</a>
           </div>
         </article>
       </div>
@@ -1802,29 +1874,29 @@
       <div class="research-grid">
         <article class="research-card reveal">
           <div class="research-cover">
-            <img src="Research Papers/1/photo_2026-09-11_20-42-12.jpg" alt="Research paper 1 cover" loading="lazy" decoding="async"
+            <img src="Research_Papers/1/photo_2026-09-11_20-42-12.jpg" alt="Research paper 1 cover" loading="lazy" decoding="async"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="img-fallback"><span class="ico">📄</span><strong>Cover</strong><span>Research Papers/1</span></div>
+            <div class="img-fallback"><span class="ico">📄</span><strong>Cover</strong><span>Research_Papers/1</span></div>
           </div>
           <div class="research-content">
             <div class="research-venue">Engineering Project</div>
             <div class="research-title">AquaPure — Integrated Natural Filtration &amp; Desalination System</div>
             <p class="research-desc">Research paper detailing the AquaPure multi-stage water filtration and desalination system.</p>
-            <a class="btn-outline" href="Research Papers/1/AquaPure_Integrated_Natural_Filtration_and_Desalination_System_1.pdf" target="_blank" rel="noopener">Read Paper</a>
+            <a class="btn-outline" href="Research_Papers/1/AquaPure_Integrated_Natural_Filtration_and_Desalination_System_1.pdf" target="_blank" rel="noopener">Read Paper</a>
           </div>
         </article>
 
         <article class="research-card reveal">
           <div class="research-cover">
-            <img src="Research Papers/2/photo_2026-09-11_20-42-00.jpg" alt="Research paper 2 cover" loading="lazy" decoding="async"
+            <img src="Research_Papers/2/photo_2026-09-11_20-42-00.jpg" alt="Research paper 2 cover" loading="lazy" decoding="async"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div class="img-fallback"><span class="ico">📄</span><strong>Cover</strong><span>Research Papers/2</span></div>
+            <div class="img-fallback"><span class="ico">📄</span><strong>Cover</strong><span>Research_Papers/2</span></div>
           </div>
           <div class="research-content">
             <div class="research-venue">Research Paper</div>
             <div class="research-title">Melioidosis Research Paper</div>
             <p class="research-desc">Research paper studying Melioidosis, its causes, spread, and public health implications.</p>
-            <a class="btn-outline" href="Research Papers/2/Melioidosis research paper.pdf" target="_blank" rel="noopener">Read Paper</a>
+            <a class="btn-outline" href="Research_Papers/2/Melioidosis_research_paper.pdf" target="_blank" rel="noopener">Read Paper</a>
           </div>
         </article>
       </div>
@@ -1858,10 +1930,32 @@
   <div class="cv-overlay" id="cvOverlay" role="dialog" aria-modal="true" aria-labelledby="cvHeading" aria-hidden="true">
     <div class="cv-modal">
       <button type="button" class="cv-close" id="cvClose" aria-label="Close CV preview">✕</button>
-      <div class="cv-inner" id="cvPreview"><div class="cv-loading">Preparing ATS CV…</div></div>
+      <div class="cv-progress" id="cvProgress" hidden>
+        <ol class="cv-steps">
+          <li data-step="1">Analyzing portfolio…</li>
+          <li data-step="2">Extracting achievements…</li>
+          <li data-step="3">Analyzing certificates…</li>
+          <li data-step="4">Optimizing keywords…</li>
+          <li data-step="5">Building ATS layout…</li>
+          <li data-step="6">Preparing PDF…</li>
+        </ol>
+      </div>
+      <div class="cv-inner" id="cvPreview"><div class="cv-loading">Ready when you are.</div></div>
+      <div class="cv-job" id="cvJobBox" hidden>
+        <label class="cv-job-label" for="cvJobText">
+          Target a specific job (optional) — matches your real skills against the role
+        </label>
+        <textarea id="cvJobText" rows="3" maxlength="8000" placeholder="Paste a job description…"></textarea>
+      </div>
+      <div class="cv-ats" id="cvAtsBox" hidden></div>
+      <div id="cvNotice" class="cv-notice-msg"></div>
       <div class="cv-actions">
         <button type="button" class="cv-btn cv-btn-ghost" id="cvPrint">Print / Save as PDF</button>
-        <button type="button" class="cv-btn cv-btn-primary" id="cvDownload">Download ATS CV</button>
+        <button type="button" class="cv-btn cv-btn-ghost" id="cvEdit" hidden>Edit CV</button>
+        <button type="button" class="cv-btn cv-btn-ghost" id="cvAnalyze" hidden>ATS Analysis</button>
+        <button type="button" class="cv-btn cv-btn-ghost" id="cvRegenerate" hidden>Regenerate</button>
+        <button type="button" class="cv-btn cv-btn-primary" id="cvGenerate">Generate ATS CV</button>
+        <button type="button" class="cv-btn cv-btn-primary" id="cvDownload" hidden>Download PDF</button>
       </div>
     </div>
   </div>
@@ -1878,7 +1972,7 @@
       for (var i = 1; i <= total; i++) {
         var num = String(i).padStart(3, '0');
         html +=
-          '<button type="button" class="cert-card reveal" data-index="' + i + '" data-caption="Certificate ' + num + '" aria-label="Open certificate ' + num + '">' +
+          '<button type="button" class="cert-card reveal" data-cert-id="' + i + '" data-index="' + i + '" data-caption="Certificate ' + num + '" aria-label="Open certificate ' + num + '">' +
             '<span class="cert-photo">' +
               '<img src="Certificates/' + num + '.jpg" alt="Certificate ' + num + '" loading="lazy" ' +
                 'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
@@ -1952,9 +2046,25 @@
       var cvPreview = document.getElementById('cvPreview');
       var lastCvTrigger = null;
 
+      var cvGenerateBtn = document.getElementById('cvGenerate');
+      var cvDownloadBtn = document.getElementById('cvDownload');
+      var cvRegenerateBtn = document.getElementById('cvRegenerate');
+      var cvAnalyzeBtn = document.getElementById('cvAnalyze');
+      var cvEditBtn = document.getElementById('cvEdit');
+      var cvPrintBtn = document.getElementById('cvPrint');
+      var cvProgress = document.getElementById('cvProgress');
+      var cvJobBox = document.getElementById('cvJobBox');
+      var cvJobText = document.getElementById('cvJobText');
+      var cvAtsBox = document.getElementById('cvAtsBox');
+
+      var ATS_CV_ENDPOINT = window.ATS_CV_ENDPOINT || 'https://admin-cms-mocha.vercel.app/api/ats-cv';
+      var cvState = null;   // ATS CV json returned by the API
+      var atsState = null;  // ATS metrics returned by the API
+      var cvEditMode = false;
+
       function openCV(event) {
         lastCvTrigger = event && event.currentTarget ? event.currentTarget : document.activeElement;
-        renderCVPreview();
+        resetCvUi();
         cvOverlay.setAttribute('aria-hidden', 'false');
         cvOverlay.classList.add('open');
         document.documentElement.style.overflow = 'hidden';
@@ -1967,13 +2077,40 @@
         if (lastCvTrigger && typeof lastCvTrigger.focus === 'function') lastCvTrigger.focus();
       }
 
+      function resetCvUi() {
+        cvState = null;
+        atsState = null;
+        cvEditMode = false;
+        cvProgress.hidden = true;
+        cvJobBox.hidden = false;
+        cvAtsBox.hidden = true;
+        cvAtsBox.innerHTML = '';
+        cvGenerateBtn.hidden = false;
+        cvDownloadBtn.hidden = true;
+        cvRegenerateBtn.hidden = true;
+        cvAnalyzeBtn.hidden = true;
+        cvEditBtn.hidden = true;
+        cvPreview.innerHTML = '<div class="cv-loading">Ready when you are.</div>';
+      }
+
       document.getElementById('navCvBtn').addEventListener('click', openCV);
       document.getElementById('cvClose').addEventListener('click', closeCV);
       cvOverlay.addEventListener('click', function (e) {
         if (e.target === cvOverlay) closeCV();
       });
 
-      // ---- Portfolio data (extracted from the page — nothing invented) ----
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function absUrl(u) {
+        if (!u) return '';
+        if (/^https?:\/\//i.test(u)) return u;
+        var base = (cvState && cvState.profile && cvState.profile.portfolio) || window.location.origin;
+        return base.replace(/\/$/, '') + (u.charAt(0) === '/' ? u : '/' + u);
+      }
+
+      // ---- Deterministic fallback (DOM-scraped, used when the AI API is unavailable) ----
       function cvData() {
         var projects = [];
         document.querySelectorAll('.project-card').forEach(function (card) {
@@ -2009,27 +2146,19 @@
         };
       }
 
-      function esc(s) {
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      }
-
-      // ---- CV preview (ATS-friendly, single column, real text) ----
-      function renderCVPreview() {
+      function renderBasicPreview() {
         var data = cvData();
         var h = '';
         h += '<div class="cv-head" id="cvHeading">';
         h +=   '<div><h1>' + esc(data.name) + '</h1><div class="cv-title-job">' + esc(data.title) + '</div></div>';
         h += '</div>';
         h += '<div class="cv-rule"></div>';
-
         h += '<div class="cv-section"><h2>Summary</h2><p class="cv-summary">' + esc(data.summary) + '</p></div>';
-
         h += '<div class="cv-section"><h2>Projects</h2>';
         data.projects.forEach(function (p) {
           h += '<div class="cv-row"><strong>' + esc(p.title) + '</strong><p>' + esc(p.desc) + '</p></div>';
         });
         h += '</div>';
-
         if (data.research.length) {
           h += '<div class="cv-section"><h2>Publications / Research</h2>';
           data.research.forEach(function (r) {
@@ -2037,7 +2166,6 @@
           });
           h += '</div>';
         }
-
         if (data.volunteering.length) {
           h += '<div class="cv-section"><h2>Volunteering</h2>';
           data.volunteering.forEach(function (v) {
@@ -2045,26 +2173,18 @@
           });
           h += '</div>';
         }
-
         h += '<div class="cv-section"><h2>Certifications</h2>';
         h += '<div class="cv-row"><strong>' + data.certCount + ' Training Certificates</strong><div class="cv-sub">Certifications</div></div>';
         h += '</div>';
-
         if (data.skills.length) {
           h += '<div class="cv-section"><h2>Skills</h2><p class="cv-skills">' + esc(data.skills.join(', ')) + '</p></div>';
         }
-
         cvPreview.innerHTML = h;
       }
 
-      // ---- Download via jsPDF (real selectable text) ----
-      function downloadATS() {
-        if (reduceMotion) { /* still allowed */ }
+      function basicDownloadATS() {
         var doc = (window.jspdf && window.jspdf.jsPDF) ? new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' }) : null;
-        if (!doc) {
-          window.print();
-          return;
-        }
+        if (!doc) { window.print(); return; }
         var data = cvData();
         doc.setProperties({ title: data.name + ' ATS CV', author: data.name });
         var W = doc.internal.pageSize.getWidth();
@@ -2072,10 +2192,7 @@
         var margin = 54;
         var y = margin;
         function ensure(needed) {
-          if (y + needed > H - margin) {
-            doc.addPage();
-            y = margin;
-          }
+          if (y + needed > H - margin) { doc.addPage(); y = margin; }
         }
         function section(titleText) {
           ensure(40);
@@ -2098,8 +2215,6 @@
           doc.text(lines, margin, y);
           y += lines.length * (size || 10) * 1.3 + (gap || 8);
         }
-
-        // Header
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(24);
         doc.setTextColor(10, 10, 10);
@@ -2110,46 +2225,471 @@
         doc.setTextColor(60, 60, 60);
         doc.text(data.title, margin, y);
         y += 18;
-
         section('Summary');
         para(data.summary, 10, false, 14);
-
         section('Projects');
         data.projects.forEach(function (p) {
           para(p.title, 11, true, 2);
           para(p.desc, 9.5, false, 14);
         });
-
         if (data.research.length) {
           section('Publications');
-          data.research.forEach(function (r) {
-            para(r.title + ' — ' + r.venue, 10, false, 12);
-          });
+          data.research.forEach(function (r) { para(r.title + ' — ' + r.venue, 10, false, 12); });
         }
-
         if (data.volunteering.length) {
           section('Volunteering');
-          data.volunteering.forEach(function (v) {
-            para(v, 10, false, 12);
-          });
+          data.volunteering.forEach(function (v) { para(v, 10, false, 12); });
         }
-
         section('Certifications');
         para(data.certCount + ' Training Certificates', 10, false, 12);
-
         if (data.skills.length) {
           section('Skills');
           para(data.skills.join(', '), 10, false, 12);
         }
-
         doc.save(data.name.replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '') + '_ATS_CV.pdf');
       }
 
-      document.getElementById('cvDownload').addEventListener('click', downloadATS);
-      document.getElementById('cvPrint').addEventListener('click', function () {
-        renderCVPreview();
+      // ---- AI-driven generation ----
+      function setStep(step, state) {
+        var li = cvProgress.querySelector('[data-step="' + step + '"]');
+        if (!li) return;
+        li.classList.remove('done', 'active');
+        if (state === 'active') li.classList.add('active');
+        if (state === 'done') li.classList.add('done');
+      }
+      function animateSteps(delayMs) {
+        var order = [1, 2, 3, 4, 5];
+        order.forEach(function (s, i) {
+          setTimeout(function () {
+            setStep(s, 'done');
+            var next = order[i + 1];
+            if (next) setStep(next, 'active');
+          }, i * (delayMs || 300));
+        });
+      }
+
+      function generateCV() {
+        var jobDescription = (cvJobText.value || '').trim();
+        cvGenerateBtn.disabled = true;
+        cvRegenerateBtn.disabled = true;
+        cvProgress.hidden = false;
+        cvAtsBox.hidden = true;
+        cvAtsBox.innerHTML = '';
+        setStep(1, 'active');
+        cvPreview.innerHTML = '<div class="cv-loading">Analyzing portfolio…</div>';
+        animateSteps(300);
+
+        var started = performance.now();
+        var timer = setInterval(function () {
+          setStep(6, 'active');
+        }, 900);
+
+        fetch(ATS_CV_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobDescription: jobDescription })
+        }).then(function (res) {
+          return res.json().then(function (data) { return { ok: res.ok, status: res.status, data: data }; });
+        }).then(function (result) {
+          clearInterval(timer);
+          var elapsed = performance.now() - started;
+          var waitMs = Math.max(0, 600 - elapsed);
+          setTimeout(function () {
+            if (!result.ok) {
+              var msg = (result.data && result.data.error && result.data.error.message) || 'CV service unavailable.';
+              showCvError(msg);
+              renderBasicPreview();
+              return;
+            }
+            cvState = result.data && result.data.cv;
+            atsState = result.data && result.data.ats;
+            if (!cvState) { renderBasicPreview(); showCvError('No CV data returned.'); return; }
+            renderCV(cvState);
+            setStep(6, 'done');
+            cvGenerateBtn.hidden = true;
+            cvDownloadBtn.hidden = false;
+            cvRegenerateBtn.hidden = false;
+            cvAnalyzeBtn.hidden = false;
+            cvEditBtn.hidden = false;
+            showCvError('');
+          }, waitMs);
+        }).catch(function (err) {
+          clearInterval(timer);
+          showCvError('Could not reach the CV service. Showing a basic CV instead.');
+          renderBasicPreview();
+        }).finally(function () {
+          cvGenerateBtn.disabled = false;
+          cvRegenerateBtn.disabled = false;
+        });
+      }
+
+      function showCvError(msg) {
+        var box = document.getElementById('cvNotice');
+        if (!box) return;
+        box.textContent = msg;
+      }
+
+      function bullets(list) {
+        var h = '<ul class="cv-bullets">';
+        list.forEach(function (b) {
+          h += '<li>' + esc(b) + '</li>';
+        });
+        return h + '</ul>';
+      }
+
+      function renderCV(cv) {
+        var h = '';
+        var name = cv.profile.name || cv.profile.professionalName || '';
+        h += '<div class="cv-head" id="cvHeading">';
+        h +=   '<div><h1>' + esc(name) + '</h1>';
+        if (cv.profile.title) h += '<div class="cv-title-job">' + esc(cv.profile.title) + '</div>';
+        h +=   '</div>';
+        var contact = [];
+        if (cv.profile.location) contact.push(esc(cv.profile.location));
+        if (cv.profile.email) contact.push(esc(cv.profile.email));
+        if (cv.profile.phone) contact.push(esc(cv.profile.phone));
+        if (cv.profile.github) contact.push(esc(cv.profile.github));
+        if (cv.profile.linkedin) contact.push(esc(cv.profile.linkedin));
+        if (cv.profile.portfolio) contact.push(esc(cv.profile.portfolio));
+        if (contact.length) h += '<div class="cv-contact">' + contact.join('<br />') + '</div>';
+        h += '</div>';
+        h += '<div class="cv-rule"></div>';
+
+        if (cv.summary) h += '<div class="cv-section"><h2>Professional Summary</h2><p class="cv-summary">' + esc(cv.summary) + '</p></div>';
+
+        if (cv.education.length) {
+          h += '<div class="cv-section"><h2>Education</h2>';
+          cv.education.forEach(function (e) {
+            h += '<div class="cv-row"><strong>' + esc(e.degree) + '</strong><div class="cv-sub">' + esc(e.institution) + (e.graduationYear ? ' — ' + esc(e.graduationYear) : '') + '</div></div>';
+            if (e.coursework.length) h += '<p class="cv-sub">Coursework: ' + esc(e.coursework.join(', ')) + '</p>';
+          });
+          h += '</div>';
+        }
+
+        if (cv.experience.length) {
+          h += '<div class="cv-section"><h2>Experience</h2>';
+          cv.experience.forEach(function (x) {
+            var dates = [x.startDate, x.endDate].filter(Boolean).join(' – ');
+            h += '<div class="cv-row"><strong>' + esc(x.position) + '</strong><div class="cv-sub">' + esc(x.organization) + (dates ? ' — ' + esc(dates) : '') + '</div>' + bullets(x.bullets) + '</div>';
+          });
+          h += '</div>';
+        }
+
+        if (cv.projects.length) {
+          h += '<div class="cv-section"><h2>Projects</h2>';
+          cv.projects.forEach(function (p) {
+            h += '<div class="cv-row"><strong>' + esc(p.name) + '</strong>';
+            if (p.award) h += '<div class="cv-sub">' + esc(p.award) + '</div>';
+            if (p.technologies.length) h += '<div class="cv-sub">Tech: ' + esc(p.technologies.join(', ')) + '</div>';
+            h += bullets(p.bullets.slice(0, 2));
+            var plinks = (p.links || []).filter(Boolean);
+            if (plinks.length) {
+              h += '<div class="cv-sub">' + plinks.map(function (l) {
+                return '<a class="cv-link" href="' + esc(absUrl(l)) + '" target="_blank" rel="noopener">View</a>';
+              }).join(' · ') + '</div>';
+            }
+            h += '</div>';
+          });
+          h += '</div>';
+        }
+
+        if (cv.achievements.length) {
+          h += '<div class="cv-section"><h2>Achievements & Awards</h2>';
+          cv.achievements.forEach(function (a) {
+            var meta = [a.organization, a.date].filter(Boolean).join(' — ');
+            h += '<div class="cv-row"><strong>' + esc(a.title) + '</strong>' + (meta ? '<div class="cv-sub">' + esc(meta) + '</div>' : '') + (a.description ? '<p>' + esc(a.description) + '</p>' : '') + '</div>';
+          });
+          h += '</div>';
+        }
+
+        if (cv.certifications.length) {
+          h += '<div class="cv-section"><h2>Certifications</h2>';
+          cv.certifications.forEach(function (c) {
+            var pieces = [];
+            var title = esc(c.title);
+            if (c.achievement) title = '<strong>' + esc(c.achievement) + '</strong> – ' + title;
+            var issuerPart = c.issuer ? ' by ' + esc(c.issuer) : '';
+            var datePart = c.date ? ' (' + esc(c.date) + ')' : '';
+            h += '<div class="cv-row">' + title + '<span class="cv-sub">' + issuerPart + datePart + '</span>';
+            if (c.category) h += '<div class="cv-sub">' + esc(c.category) + '</div>';
+            if (c.skills.length) h += '<div class="cv-sub">Skills: ' + esc(c.skills.join(', ')) + '</div>';
+            h += ' — <a class="cv-link" href="' + esc(c.sourceUrl) + '" target="_blank" rel="noopener">View Certificate</a></div>';
+          });
+          h += '</div>';
+        }
+
+        var skillGroups = [['Technical', cv.skills.technical], ['Research', cv.skills.research], ['Tools', cv.skills.tools], ['Soft Skills', cv.skills.soft]];
+        var present = skillGroups.filter(function (g) { return g[1].length; });
+        if (present.length) {
+          h += '<div class="cv-section"><h2>Technical Skills</h2>';
+          present.forEach(function (g) {
+            h += '<div class="cv-sub"><strong>' + esc(g[0]) + ':</strong> ' + esc(g[1].join(', ')) + '</div>';
+          });
+          h += '</div>';
+        }
+
+        if (cv.languages.length) {
+          h += '<div class="cv-section"><h2>Languages</h2><p class="cv-skills">' + esc(cv.languages.join(', ')) + '</p></div>';
+        }
+
+        if (cv.publications.length) {
+          h += '<div class="cv-section"><h2>Publications / Research</h2>';
+          cv.publications.forEach(function (p) {
+            h += '<div class="cv-row"><strong>' + esc(p.title) + '</strong>' + (p.venue ? '<div class="cv-sub">' + esc(p.venue) + '</div>' : '') + (p.link ? ' <a class="cv-link" href="' + esc(absUrl(p.link)) + '" target="_blank" rel="noopener">Read</a>' : '') + '</div>';
+          });
+          h += '</div>';
+        }
+
+        cvPreview.innerHTML = h;
+        cvPreview.dataset.cvName = name;
+      }
+
+      // ---- Edit CV (summary only) ----
+      function toggleEdit() {
+        cvEditMode = !cvEditMode;
+        if (!cvState) return;
+        if (cvEditMode) {
+          var summary = cvPreview.querySelector('.cv-summary');
+          if (summary) {
+            var ta = document.createElement('textarea');
+            ta.className = 'cv-summary-editor';
+            ta.rows = 4;
+            ta.value = cvState.summary;
+            ta.addEventListener('blur', function () {
+              cvState.summary = ta.value.trim();
+              cvEditMode = false;
+              renderCV(cvState);
+            });
+            summary.replaceWith(ta);
+            ta.focus();
+          } else {
+            cvEditMode = false;
+          }
+        }
+      }
+
+      // ---- ATS Analysis panel ----
+      function showAts() {
+        if (!atsState) return;
+        var s = atsState;
+        cvAtsBox.innerHTML =
+          '<h3>ATS Analysis</h3>' +
+          '<div class="score">ATS Compatibility: ' + Math.round(s.score || 0) + '/100</div>' +
+          (typeof s.keywordMatch === 'number' ? '<div>Keyword Match: ' + s.keywordMatch + '%</div>' : '') +
+          (s.strongMatches && s.strongMatches.length ? '<div>Strong Matches: <span>' + esc(s.strongMatches.join(', ')) + '</span></div>' : '') +
+          (s.missingKeywords && s.missingKeywords.length ? '<div>Missing/Weak: ' + esc(s.missingKeywords.join(', ')) + '</div>' : '') +
+          (s.recommendations && s.recommendations.length ? '<ul>' + s.recommendations.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>' : '');
+        cvAtsBox.hidden = false;
+        cvAnalyzeBtn.textContent = 'Hide ATS Analysis';
+        var listener = function () {
+          cvAtsBox.hidden = true;
+          cvAnalyzeBtn.textContent = 'ATS Analysis';
+          cvAnalyzeBtn.removeEventListener('click', listener);
+        };
+        cvAnalyzeBtn.addEventListener('click', listener);
+      }
+
+      // ---- Download PDF with real selectable text + clickable links ----
+      function downloadPdf() {
+        if (!cvState) { renderBasicPreview(); basicDownloadATS(); return; }
+        var cv = cvState;
+        var doc = (window.jspdf && window.jspdf.jsPDF) ? new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' }) : null;
+        if (!doc) { window.print(); return; }
+        var name = cv.profile.name || cv.profile.professionalName || 'CV';
+        doc.setProperties({ title: name + ' ATS CV', author: name });
+        var W = doc.internal.pageSize.getWidth();
+        var H = doc.internal.pageSize.getHeight();
+        var margin = 54;
+        var y = margin;
+        function ensure(needed) {
+          if (y + needed > H - margin) { doc.addPage(); y = margin; }
+        }
+        function section(titleText) {
+          ensure(40);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
+          doc.setTextColor(20, 20, 20);
+          doc.text(titleText.toUpperCase(), margin, y);
+          y += 6;
+          doc.setDrawColor(180, 180, 180);
+          doc.setLineWidth(0.75);
+          doc.line(margin, y, W - margin, y);
+          y += 16;
+        }
+        function para(text, size, bold, gap) {
+          ensure(18);
+          doc.setFont('helvetica', bold ? 'bold' : 'normal');
+          doc.setFontSize(size || 10);
+          doc.setTextColor(30, 30, 30);
+          var lines = doc.splitTextToSize(text, W - margin * 2);
+          doc.text(lines, margin, y);
+          y += lines.length * (size || 10) * 1.3 + (gap || 8);
+        }
+        function paraBullet(text, size) {
+          ensure(18);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(size || 10);
+          doc.setTextColor(30, 30, 30);
+          var lines = doc.splitTextToSize('•  ' + text, W - margin * 2);
+          doc.text(lines, margin, y);
+          y += lines.length * (size || 10) * 1.3 + 3;
+        }
+        function linkPara(label, url, bold) {
+          ensure(18);
+          doc.setFont('helvetica', bold ? 'bold' : 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(20, 20, 20);
+          var labelLines = doc.splitTextToSize(label, (W - margin * 2) - 96);
+          if (!labelLines.length) return;
+          var width = Math.max.apply(null, labelLines.map(function (l) { return doc.getTextWidth(l); }));
+          doc.text(labelLines, margin, y);
+          var linkY = y - 8;
+          var linkH = labelLines.length * 13;
+          doc.link(margin + width + 4, linkY, 84, linkH, { url: url });
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 102, 204);
+          doc.text('View Certificate', margin + width + 8, y - labelLines.length * 13 + 9);
+          y += labelLines.length * 13 + 8;
+        }
+
+        // Header
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(24);
+        doc.setTextColor(10, 10, 10);
+        doc.text(name, margin, y);
+        y += 22;
+        if (cv.profile.title) {
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(60, 60, 60);
+          doc.text(cv.profile.title, margin, y);
+          y += 18;
+        }
+        var contact = [];
+        ['location', 'phone', 'email', 'github', 'linkedin'].forEach(function (k) {
+          if (cv.profile[k]) contact.push(k + ': ' + cv.profile[k]);
+        });
+        if (cv.profile.portfolio) contact.push('portfolio: ' + cv.profile.portfolio);
+        if (contact.length) {
+          para(contact.join('   |   '), 9, false, 12);
+        }
+
+        if (cv.summary) {
+          section('Professional Summary');
+          para(cv.summary, 10, false, 14);
+        }
+
+        if (cv.education.length) {
+          section('Education');
+          cv.education.forEach(function (e) {
+            para(e.degree + (e.graduationYear ? ' — ' + e.graduationYear : ''), 11, true, 1);
+            para(e.institution, 10, false, 10);
+          });
+        }
+
+        if (cv.experience.length) {
+          section('Experience');
+          cv.experience.forEach(function (x) {
+            var dates = [x.startDate, x.endDate].filter(Boolean).join(' – ');
+            para(x.position + (dates ? ' — ' + dates : ''), 11, true, 1);
+            para(x.organization, 10, false, 4);
+            x.bullets.forEach(function (b) { paraBullet(b, 9.5); });
+            y += 4;
+          });
+        }
+
+        if (cv.projects.length) {
+          section('Projects');
+          cv.projects.forEach(function (p) {
+            para(p.name, 11, true, 1);
+            if (p.award) para(p.award, 9.5, false, 2);
+            p.bullets.slice(0, 2).forEach(function (b) { paraBullet(b, 9.5); });
+            if (p.technologies.length) para('Tech: ' + p.technologies.join(', '), 9.5, false, 6);
+            y += 2;
+          });
+        }
+
+        if (cv.achievements.length) {
+          section('Achievements & Awards');
+          cv.achievements.forEach(function (a) {
+            var meta = [a.organization, a.date].filter(Boolean).join(' — ');
+            para(a.title + (meta ? ' — ' + meta : ''), 10, true, 1);
+            if (a.description) para(a.description, 9.5, false, 6);
+          });
+        }
+
+        if (cv.certifications.length) {
+          section('Certifications');
+          cv.certifications.forEach(function (c) {
+            var label = (c.achievement ? c.achievement + ' – ' : '') + c.title + (c.issuer ? ' — ' + c.issuer : '') + (c.date ? ' (' + c.date + ')' : '');
+            linkPara(label, c.sourceUrl, true);
+          });
+        }
+
+        var skillGroups = [['Technical', cv.skills.technical], ['Research', cv.skills.research], ['Tools', cv.skills.tools], ['Soft Skills', cv.skills.soft]];
+        var present = skillGroups.filter(function (g) { return g[1].length; });
+        if (present.length) {
+          section('Technical Skills');
+          present.forEach(function (g) {
+            para(g[0] + ': ' + g[1].join(', '), 9.5, false, 8);
+          });
+        }
+
+        if (cv.languages.length) {
+          section('Languages');
+          para(cv.languages.join(', '), 10, false, 12);
+        }
+
+        if (cv.publications.length) {
+          section('Publications / Research');
+          cv.publications.forEach(function (p) {
+            para(p.title + (p.venue ? ' — ' + p.venue : ''), 10, false, 10);
+          });
+        }
+
+        doc.save((name || 'CV').replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '') + '_ATS_CV.pdf');
+      }
+
+      cvGenerateBtn.addEventListener('click', generateCV);
+      cvDownloadBtn.addEventListener('click', downloadPdf);
+      cvRegenerateBtn.addEventListener('click', generateCV);
+      cvAnalyzeBtn.addEventListener('click', showAts);
+      cvEditBtn.addEventListener('click', toggleEdit);
+      cvPrintBtn.addEventListener('click', function () {
         window.print();
       });
+
+      // ---- Deep link: ?certificate=<id> opens that exact certificate ----
+      function certificateIdFromUrl() {
+        var params = new URLSearchParams(window.location.search);
+        var fromQuery = params.get('certificate');
+        if (fromQuery) return fromQuery;
+        var hash = window.location.hash;
+        var m = hash.match(/[?&]certificate=([^&]+)/);
+        return m ? decodeURIComponent(m[1]) : null;
+      }
+      function openCertificateById(id) {
+        if (!id) return false;
+        var cards = document.querySelectorAll('.cert-card');
+        for (var i = 0; i < cards.length; i++) {
+          if (cards[i].dataset.certId === id) {
+            var img = cards[i].querySelector('img');
+            if (!img || img.style.display === 'none') return true;
+            openLightbox(img.src, img.alt, cards[i].dataset.caption || cards[i].querySelector('.cert-title').textContent);
+            return true;
+          }
+        }
+        return false;
+      }
+      (function tryOpenDeepLink() {
+        var id = certificateIdFromUrl();
+        if (!id) return;
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts++;
+          if (openCertificateById(id) || attempts > 20) clearInterval(timer);
+        }, 250);
+      })();
 
       // ---- Mobile nav toggle ----
       var navToggle = document.querySelector('.nav-toggle');

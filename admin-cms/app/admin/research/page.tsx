@@ -110,7 +110,7 @@ const { data, error } = await supabase
   }
 
   return (
-    <div className="p-8">
+<div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -144,9 +144,9 @@ const { data, error } = await supabase
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {papers.map((p) => (
-            <div key={p.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-gray-700 transition-colors flex gap-5">
+<div key={p.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-gray-700 transition-colors flex flex-col sm:flex-row sm:gap-5">
               {/* Cover Photo */}
-              <div className="w-28 flex-shrink-0 aspect-[3/4] relative rounded-xl overflow-hidden border border-gray-800 bg-gray-950">
+              <div className="w-full flex-shrink-0 aspect-[16/9] sm:aspect-[3/4] sm:w-28 relative rounded-xl overflow-hidden border border-gray-800 bg-gray-950">
                 {p.image_url ? (
                   <Image src={p.image_url} alt={p.title} fill className="object-cover" unoptimized />
                 ) : (
@@ -191,13 +191,13 @@ const { data, error } = await supabase
                   <div className="flex gap-2">
                     <button
                       onClick={() => openEdit(p)}
-                      className="text-gray-300 hover:text-white text-xs px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 transition-colors"
+                      className="text-gray-300 hover:text-white text-xs px-2.5 py-1 max-md:px-3 max-md:py-2 rounded bg-gray-800 hover:bg-gray-700 transition-colors"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => setDeleteTarget(p)}
-                      className="text-red-400 hover:text-red-300 text-xs px-2.5 py-1 rounded bg-red-500/10 hover:bg-red-500/20 transition-colors"
+                      className="text-red-400 hover:text-red-300 text-xs px-2.5 py-1 max-md:px-3 max-md:py-2 rounded bg-red-500/10 hover:bg-red-500/20 transition-colors"
                     >
                       Delete
                     </button>
@@ -289,7 +289,7 @@ const { data, error } = await supabase
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+                className="px-4 py-2 max-md:min-h-11 text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -297,7 +297,7 @@ const { data, error } = await supabase
                 type="button"
                 onClick={handleSave}
                 disabled={saving || !form.title.trim()}
-                className="px-5 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-lg transition-colors shadow-lg shadow-red-600/20"
+                className="px-5 py-2 max-md:min-h-11 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-lg transition-colors shadow-lg shadow-red-600/20"
               >
                 {saving ? 'Saving…' : editingId ? 'Update Paper' : 'Publish Paper'}
               </button>
