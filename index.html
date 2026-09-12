@@ -586,6 +586,119 @@
       }
     }
 
+    @media (max-width: 767px) {
+      .hero {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding-bottom: 48px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        top: clamp(14px, 3vw, 20px);
+        left: clamp(16px, 5vw, 24px);
+        right: clamp(16px, 5vw, 24px);
+        flex-direction: row;
+        gap: 0;
+        font-size: 9px;
+        letter-spacing: 1px;
+      }
+      .topbar .sub {
+        font-size: 8px;
+      }
+      .topbar .avail {
+        font-size: 8px;
+        gap: 5px;
+        white-space: nowrap;
+      }
+
+      .giant-word {
+        top: clamp(56px, 9vh, 90px);
+        width: 100vw;
+        max-width: none;
+        font-size: clamp(58px, 20vw, 100px);
+        line-height: 1;
+        letter-spacing: 0;
+        padding: 0;
+        transform: translateX(-50%);
+        animation: none;
+        opacity: 1;
+      }
+
+      .portrait-wrap {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        transform: none;
+        height: clamp(300px, 52vh, 470px);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-top: clamp(110px, 16vh, 170px);
+        z-index: 2;
+        animation: fadeInUp 0.9s 0.35s var(--ease) forwards;
+      }
+
+      .left-copy {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin: clamp(16px, 4vh, 28px) clamp(18px, 6vw, 28px) 0;
+        max-width: 100%;
+        z-index: 5;
+        animation: fadeInUp 0.8s 0.5s var(--ease) forwards;
+      }
+      .greeting {
+        font-size: clamp(20px, 5.5vw, 28px);
+      }
+      .name {
+        font-size: clamp(34px, 10.5vw, 52px);
+        margin-bottom: 8px;
+      }
+      .role-line {
+        font-size: clamp(11.5px, 3.2vw, 14px);
+        margin-bottom: 12px;
+      }
+      .desc {
+        max-width: 100%;
+        font-size: clamp(12px, 3.7vw, 14px);
+        margin-bottom: 16px;
+      }
+      .avail-tag {
+        font-size: clamp(9px, 2.7vw, 11px);
+      }
+
+      .stats {
+        position: relative;
+        right: auto;
+        top: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 14px;
+        margin: clamp(18px, 4vh, 30px) clamp(18px, 6vw, 28px) 0;
+        z-index: 5;
+        animation: fadeInUp 0.8s 0.65s var(--ease) forwards;
+      }
+      .stat {
+        flex: 1 1 0;
+        border-left: none;
+        border-top: 1px solid var(--line);
+        padding: 10px 0 0;
+      }
+      .stat .num {
+        font-size: clamp(22px, 7vw, 32px);
+      }
+      .stat .label {
+        font-size: 9px;
+        margin-top: 5px;
+      }
+    }
+
     /* ======================================================
        SITE NAV
     ====================================================== */
