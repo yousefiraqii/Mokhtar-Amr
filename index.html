@@ -588,15 +588,16 @@
 
     @media (max-width: 767px) {
       .hero {
+        position: relative;
         height: auto;
         min-height: 100vh;
         min-height: 100svh;
         padding-bottom: 48px;
-        display: flex;
-        flex-direction: column;
+        overflow-x: clip;
       }
 
       .topbar {
+        position: absolute;
         top: clamp(14px, 3vw, 20px);
         left: clamp(16px, 5vw, 24px);
         right: clamp(16px, 5vw, 24px);
@@ -604,6 +605,7 @@
         gap: 0;
         font-size: 9px;
         letter-spacing: 1px;
+        z-index: 10;
       }
       .topbar .sub {
         font-size: 8px;
@@ -615,42 +617,46 @@
       }
 
       .giant-word {
-        top: clamp(56px, 9vh, 90px);
+        position: absolute;
+        z-index: 1;
+        top: clamp(64px, 12vh, 120px);
+        left: 50%;
+        transform: translateX(-50%);
         width: 100vw;
         max-width: none;
-        font-size: clamp(58px, 20vw, 100px);
+        font-size: clamp(64px, 24vw, 128px);
         line-height: 1;
-        letter-spacing: 0;
+        letter-spacing: -1px;
         padding: 0;
-        transform: translateX(-50%);
+        text-align: center;
         animation: none;
         opacity: 1;
       }
 
       .portrait-wrap {
         position: relative;
+        z-index: 2;
         left: auto;
         right: auto;
         bottom: auto;
         transform: none;
-        height: clamp(300px, 52vh, 470px);
+        height: clamp(320px, 56svh, 500px);
         width: 100%;
         display: flex;
         justify-content: center;
         align-items: flex-end;
-        margin-top: clamp(110px, 16vh, 170px);
-        z-index: 2;
+        margin-top: clamp(20px, 4vh, 44px);
         animation: fadeInUp 0.9s 0.35s var(--ease) forwards;
       }
 
       .left-copy {
         position: relative;
+        z-index: 3;
         left: auto;
         right: auto;
         bottom: auto;
         margin: clamp(16px, 4vh, 28px) clamp(18px, 6vw, 28px) 0;
         max-width: 100%;
-        z-index: 5;
         animation: fadeInUp 0.8s 0.5s var(--ease) forwards;
       }
       .greeting {
@@ -675,13 +681,13 @@
 
       .stats {
         position: relative;
+        z-index: 3;
         right: auto;
         top: auto;
         flex-direction: row;
         justify-content: space-between;
         gap: 14px;
         margin: clamp(18px, 4vh, 30px) clamp(18px, 6vw, 28px) 0;
-        z-index: 5;
         animation: fadeInUp 0.8s 0.65s var(--ease) forwards;
       }
       .stat {
