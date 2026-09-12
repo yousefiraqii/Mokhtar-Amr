@@ -59,10 +59,14 @@ if (profile) {
       // 1.5 Experience & Statistics
       const statEls = document.querySelectorAll('.stats .stat');
       if (statEls.length >= 3) {
+        const updatedStatNumbers = [];
         // Stat 1: Years Experience
         if (profile.years_exp_value) {
           const num = statEls[0].querySelector('.num');
-          if (num) num.innerHTML = formatStatNum(profile.years_exp_value);
+          if (num) {
+            num.innerHTML = formatStatNum(profile.years_exp_value);
+            updatedStatNumbers.push(num);
+          }
         }
         if (profile.years_exp_label) {
           const label = statEls[0].querySelector('.label');
@@ -72,7 +76,10 @@ if (profile) {
         // Stat 2: Projects Completed
         if (profile.projects_val_value) {
           const num = statEls[1].querySelector('.num');
-          if (num) num.innerHTML = formatStatNum(profile.projects_val_value);
+          if (num) {
+            num.innerHTML = formatStatNum(profile.projects_val_value);
+            updatedStatNumbers.push(num);
+          }
         }
         if (profile.projects_val_label) {
           const label = statEls[1].querySelector('.label');
@@ -82,11 +89,20 @@ if (profile) {
         // Stat 3: Happy Clients
         if (profile.clients_val_value) {
           const num = statEls[2].querySelector('.num');
-          if (num) num.innerHTML = formatStatNum(profile.clients_val_value);
+          if (num) {
+            num.innerHTML = formatStatNum(profile.clients_val_value);
+            updatedStatNumbers.push(num);
+          }
         }
         if (profile.clients_val_label) {
           const label = statEls[2].querySelector('.label');
           if (label) label.innerHTML = escapeHtml(profile.clients_val_label).replace(/\s+/, '<br />');
+        }
+
+        if (updatedStatNumbers.length) {
+          window.dispatchEvent(new CustomEvent('portfolio:stats-updated', {
+            detail: { statNumbers: updatedStatNumbers },
+          }));
         }
       }
     }

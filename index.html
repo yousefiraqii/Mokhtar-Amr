@@ -2909,7 +2909,11 @@
 
       // ---- Stat counters (count-up, 2.4s, expo ease) ----
       var statNums = document.querySelectorAll('.stat .num');
+      var statAnimations = new WeakMap();
       function animateCount(el) {
+        var previousAnimation = statAnimations.get(el);
+        if (previousAnimation) cancelAnimationFrame(previousAnimation);
+
         var match = el.textContent.match(/^\s*(\d+)(.*)$/);
         if (!match) return;
         var target = parseInt(match[1], 10);
@@ -2931,9 +2935,13 @@
         function tick(now) {
           var p = Math.min((now - start) / dur, 1);
           setVal(Math.floor(target * easeOut(p)));
-          if (p < 1) requestAnimationFrame(tick);
+          if (p < 1) {
+            statAnimations.set(el, requestAnimationFrame(tick));
+          } else {
+            statAnimations.delete(el);
+          }
         }
-        requestAnimationFrame(tick);
+        statAnimations.set(el, requestAnimationFrame(tick));
       }
       var statObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -2943,6 +2951,14 @@
         });
       }, { threshold: 0.45 });
       statNums.forEach(function (el) { statObserver.observe(el); });
+
+      // Profile content arrives asynchronously. Restart counters when the
+      // Supabase integration replaces their initial fallback values so an
+      // earlier animation cannot restore the hard-coded numbers.
+      window.addEventListener('portfolio:stats-updated', function (event) {
+        var updatedStats = (event.detail && event.detail.statNumbers) || [];
+        updatedStats.forEach(function (el) { animateCount(el); });
+      });
 
       // ---- Word-mask headings (reference-style text mask rise) ----
       var sectionTitles = document.querySelectorAll('.section-title');
