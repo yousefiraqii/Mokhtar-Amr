@@ -164,12 +164,13 @@ if (profile) {
     console.warn('[Supabase] Error loading projects:', err);
   }
 
-  // 3. Fetch Certificates & Render
+// 3. Fetch Certificates & Render
   try {
     const { data: certs, error: certError } = await supabase
       .from('certificates')
       .select('*')
-      .order('issue_date', { ascending: false });
+      .order('created_at', { ascending: true })
+      .order('title', { ascending: true });
 
     if (!certError && certs && certs.length > 0) {
       const certGrid = document.getElementById('certGrid');
@@ -179,14 +180,22 @@ if (profile) {
           const num = String(idx + 1).padStart(3, '0');
           const imageUrl = c.image_url || `Certificates/${num}.jpg`;
           const title = c.title || `Certificate ${idx + 1}`;
-          const org = c.issuing_organization ? ` — ${c.issuing_organization}` : '';
 
           html += `
-            <button type="button" class="cert-card reveal is-in" data-index="${idx + 1}" data-caption="${escapeHtml(title + org)}" aria-label="Open certificate ${escapeHtml(title)}">
-              <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(title)}" loading="lazy"
-                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-              <div class="img-fallback"><span class="ico">🏅</span><strong>${escapeHtml(title)}</strong><span>${escapeHtml(c.issuing_organization || '')}</span></div>
-              <span class="cert-num">${num}</span>
+            <button type="button" class="cert-card reveal is-in" data-caption="${escapeHtml(title)}" aria-label="Open certificate ${escapeHtml(title)}">
+              <span class="cert-photo">
+                ${imageUrl ? `
+                  <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(title)}" loading="lazy"
+                       onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                  <span class="img-fallback"><span class="ico">🏅</span><strong>${escapeHtml(title)}</strong></span>
+                ` : `
+                  <span class="img-fallback" style="display:flex;"><span class="ico">🏅</span><strong>${escapeHtml(title)}</strong></span>
+                `}
+              </span>
+              <span class="cert-body">
+                <span class="cert-title">${escapeHtml(title)}</span>
+                ${c.description ? `<span class="cert-desc">${escapeHtml(c.description)}</span>` : ''}
+              </span>
             </button>
           `;
         });

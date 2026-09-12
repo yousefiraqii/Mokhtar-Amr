@@ -1008,52 +1008,85 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (min-width: 540px) {
+      .cert-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 768px) {
+      .cert-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .cert-grid { grid-template-columns: repeat(6, 1fr); }
     }
     .cert-card {
       position: relative;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      overflow: hidden;
-      cursor: pointer;
-      background: #101010;
+      display: block;
       padding: 0;
-      display: block;
-      transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Manrope', sans-serif;
+      color: inherit;
+      transition: transform var(--t-fast) var(--ease);
       will-change: transform;
-    }
-    .cert-card img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: contain;
-      transition: transform 700ms var(--ease);
+      -webkit-tap-highlight-color: transparent;
     }
     .cert-card:hover {
-      border-color: var(--red);
       transform: translateY(-4px);
+    }
+    .cert-photo {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #101010;
+      transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+    }
+    .cert-card:hover .cert-photo {
+      border-color: var(--red);
       box-shadow: 0 0 32px -10px rgba(193, 39, 45, 0.25);
     }
-    .cert-card:hover img {
+    .cert-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 700ms var(--ease);
+    }
+    .cert-card:hover .cert-photo img {
       transform: scale(1.05);
     }
-    .cert-num {
+    .cert-photo .img-fallback {
       position: absolute;
-      bottom: 6px;
-      right: 7px;
-      font-family: 'Anton', sans-serif;
-      font-size: 10px;
-      color: var(--white);
-      background: rgba(0, 0, 0, 0.6);
-      padding: 2px 6px;
-      border-radius: 3px;
-      letter-spacing: 0.5px;
-      transition: background 0.3s ease, color 0.3s ease;
+      inset: 0;
+      padding: 12px;
     }
-    .cert-card:hover .cert-num {
-      background: var(--red);
-      color: var(--white);
+    .cert-body {
+      display: block;
+      padding: 10px 2px 0;
+    }
+    .cert-title {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      line-height: 1.4;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+    .cert-desc {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      line-height: 1.45;
+      color: var(--grey);
     }
 
     .lightbox {
@@ -1845,12 +1878,15 @@
       for (var i = 1; i <= total; i++) {
         var num = String(i).padStart(3, '0');
         html +=
-          '<button type="button" class="cert-card reveal" data-index="' + i + '" aria-label="Open certificate ' + i + '">' +
-            '<img src="Certificates/' + num + '.jpg" alt="Certificate ' + i + '" loading="lazy" ' +
-              'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
-            '<div class="img-fallback"><span class="ico">🏅</span><strong>Certificate ' + i + '</strong>' +
-              '<span>Certificates/' + num + '.jpg</span></div>' +
-            '<span class="cert-num">' + num + '</span>' +
+          '<button type="button" class="cert-card reveal" data-index="' + i + '" data-caption="Certificate ' + num + '" aria-label="Open certificate ' + num + '">' +
+            '<span class="cert-photo">' +
+              '<img src="Certificates/' + num + '.jpg" alt="Certificate ' + num + '" loading="lazy" ' +
+                'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+              '<span class="img-fallback"><span class="ico">🏅</span><strong>Certificate ' + num + '</strong></span>' +
+            '</span>' +
+            '<span class="cert-body">' +
+              '<span class="cert-title">Certificate ' + num + '</span>' +
+            '</span>' +
           '</button>';
       }
       certGrid.innerHTML = html;
@@ -1875,7 +1911,8 @@
         var card = e.target.closest('.cert-card');
         if (!card) return;
         var img = card.querySelector('img');
-        openLightbox(img.src, img.alt, 'Certificate ' + card.dataset.index);
+        if (!img || img.style.display === 'none') return;
+        openLightbox(img.src, img.alt, card.dataset.caption || card.querySelector('.cert-title').textContent);
       });
 
       var projectPhotos = document.querySelector('.projects-grid');

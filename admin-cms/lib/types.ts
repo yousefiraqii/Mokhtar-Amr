@@ -19,9 +19,7 @@ export interface Project {
 export interface Certificate {
   id: string;
   title: string;
-  issuing_organization: string | null;
-  issue_date: string | null;
-  credential_url: string | null;
+  description: string | null;
   image_url: string | null;
   created_at: string;
 }

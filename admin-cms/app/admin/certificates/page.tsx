@@ -10,9 +10,7 @@ import Image from 'next/image';
 
 const EMPTY_FORM: CertificateInsert = {
   title: '',
-  issuing_organization: '',
-  issue_date: '',
-  credential_url: '',
+  description: '',
   image_url: '',
 };
 
@@ -37,7 +35,8 @@ export default function CertificatesPage() {
     const { data } = await supabase
       .from('certificates')
       .select('*')
-      .order('issue_date', { ascending: false });
+      .order('created_at', { ascending: true })
+      .order('title', { ascending: true });
     setCerts(data ?? []);
     setLoading(false);
   }, [supabase]);
@@ -53,9 +52,7 @@ export default function CertificatesPage() {
   function openEdit(c: Certificate) {
     setForm({
       title: c.title,
-      issuing_organization: c.issuing_organization ?? '',
-      issue_date: c.issue_date ?? '',
-      credential_url: c.credential_url ?? '',
+      description: c.description ?? '',
       image_url: c.image_url ?? '',
     });
     setEditingId(c.id);
@@ -138,19 +135,9 @@ export default function CertificatesPage() {
               )}
               <div className="p-4">
                 <p className="font-semibold text-white text-sm">{c.title}</p>
-                {c.issuing_organization && (
-                  <p className="text-gray-400 text-xs mt-1">{c.issuing_organization}</p>
+                {c.description && (
+                  <p className="text-gray-400 text-xs mt-1 line-clamp-2">{c.description}</p>
                 )}
-                {c.issue_date && (
-                  <p className="text-gray-500 text-xs mt-0.5">
-                    {new Date(c.issue_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
-                  </p>
-                )}
-                <div className="flex gap-2 mt-3">
-                  {c.credential_url && (
-                    <a href={c.credential_url} target="_blank" rel="noopener noreferrer" className="text-indigo-400 text-xs hover:underline">View credential</a>
-                  )}
-                </div>
                 <div className="flex gap-2 mt-3 pt-3 border-t border-gray-800">
                   <button onClick={() => openEdit(c)} className="text-gray-400 hover:text-white text-xs transition-colors">Edit</button>
                   <button onClick={() => setDeleteTarget(c)} className="text-gray-400 hover:text-red-400 text-xs transition-colors ml-auto">Delete</button>
@@ -193,32 +180,13 @@ export default function CertificatesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Issuing Organization</label>
-                <input
-                  value={form.issuing_organization ?? ''}
-                  onChange={(e) => setForm((f) => ({ ...f, issuing_organization: e.target.value }))}
-                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="e.g. Coursera, Google, AWS"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Issue Date</label>
-                <input
-                  type="date"
-                  value={form.issue_date ?? ''}
-                  onChange={(e) => setForm((f) => ({ ...f, issue_date: e.target.value }))}
-                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Credential URL</label>
-                <input
-                  value={form.credential_url ?? ''}
-                  onChange={(e) => setForm((f) => ({ ...f, credential_url: e.target.value }))}
-                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="https://…"
+                <label className="block text-sm font-medium text-gray-300 mb-2">Short Description</label>
+                <textarea
+                  value={form.description ?? ''}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={2}
+                  className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  placeholder="One sentence shown under the title"
                 />
               </div>
             </div>
