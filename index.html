@@ -256,6 +256,13 @@
       100% { opacity: 1; transform: scale(1.1) translateY(0); }
     }
 
+    /* Kept separate so the mobile composition can retain its horizontal
+       centering while its entrance animation controls the vertical motion. */
+    @keyframes portraitFadeInUpMobileCentered {
+      0% { opacity: 0; transform: translateX(-50%) translateY(30px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
     .portrait-wrap img {
       height: 100%;
       width: auto;
@@ -640,17 +647,27 @@
         position: absolute;
         z-index: 2;
         top: clamp(36px, 9vw, 52px);
-        left: 0;
-        right: 0;
+        left: 50%;
+        right: auto;
         bottom: auto;
-        transform: none;
+        transform: translateX(-50%);
         height: clamp(360px, 112vw, 482px);
         width: 100%;
         display: flex;
         justify-content: center;
         align-items: flex-end;
         margin: 0;
-        animation: fadeInUp 0.9s 0.35s var(--ease) forwards;
+        animation: portraitFadeInUpMobileCentered 0.9s 0.35s var(--ease) forwards;
+      }
+      .portrait-wrap img {
+        /* The PNG's visible alpha bounds are offset 44px left inside its
+           815px canvas. This ratio centers the visible portrait, while the
+           parent continues to center the image frame at 50% of the viewport. */
+        transform: translateX(5.4%);
+        /* The portrait stays fully opaque through the face and torso, then
+           dissolves into the hero rather than ending at a hard image edge. */
+        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 76%, transparent 100%);
+        mask-image: linear-gradient(to bottom, #000 0%, #000 76%, transparent 100%);
       }
 
       .left-copy {
