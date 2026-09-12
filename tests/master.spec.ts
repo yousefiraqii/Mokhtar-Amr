@@ -374,6 +374,50 @@ test.describe('Unit — supabase-integration.js (mocked Supabase, real DOM)', ()
       expect(cards[0].imgs).toBe(1);
       expect(cards[0].fallbackFlex).toBe(true); // img 404 -> onerror reveals the fallback
     });
+
+    test('stale space-named asset paths are normalized to the renamed files (no 404s, no fallbacks)', async ({ page }) => {
+      await renderWithSupabase(page, {
+        tables: {
+          projects: {
+            rows: [
+              {
+                id: 'pr1',
+                title: 'AquaPure',
+                description: 'd',
+                image_url: 'Pojects/Project 1/photo_2026-09-11_20-12-22.jpg',
+                image_url_2: 'Pojects/Project 1/photo_2026-09-11_20-12-30.jpg',
+                pdf_url: 'Pojects/Project 1/AquaPure_Integrated_Natural_Filtration_and_Desalination_System_1.pdf',
+              },
+              {
+                id: 'pr2',
+                title: 'Research',
+                description: 'd',
+                image_url: 'Research Papers/2/photo_2026-09-11_20-42-00.jpg',
+                pdf_url: 'Research Papers/2/Melioidosis research paper.pdf',
+              },
+            ],
+          },
+        },
+      });
+      const results = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('.projects-grid .project-card')).map((c) => ({
+          srcs: Array.from(c.querySelectorAll('img')).map((i) => i.getAttribute('src')),
+          btn: c.querySelector('.btn-solid')?.getAttribute('href') ?? null,
+        })),
+      );
+
+      expect(results[0].srcs).toEqual([
+        'Pojects/Project_1/photo_2026-09-11_20-12-22.jpg',
+        'Pojects/Project_1/photo_2026-09-11_20-12-30.jpg',
+      ]);
+      expect(results[0].btn).toBe('Pojects/Project_1/AquaPure_Integrated_Natural_Filtration_and_Desalination_System_1.pdf');
+      expect(results[1].srcs).toEqual(['Research_Papers/2/photo_2026-09-11_20-42-00.jpg']);
+      expect(results[1].btn).toBe('Research_Papers/2/Melioidosis_research_paper.pdf');
+      // Every rendered URL must match the deployed asset (no spaces, fixed folder names).
+      expect(
+        results.every((r) => r.srcs.every((s: string) => !/\s/.test(s)) && !/Research Papers/.test(r.btn!) && !/Project [0-9]\//.test(r.srcs.join(' '))),
+      ).toBe(true);
+    });
   });
 
   test.describe('certificates grid', () => {

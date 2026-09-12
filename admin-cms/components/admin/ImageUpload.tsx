@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { normalizeAssetPath } from '@/lib/asset-normalize';
 import Image from 'next/image';
 
 interface ImageUploadProps {
@@ -24,11 +25,11 @@ export default function ImageUpload({
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState<string | null>(currentUrl ?? null);
+  const [preview, setPreview] = useState<string | null>(normalizeAssetPath(currentUrl) ?? null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setPreview(currentUrl ?? null);
+    setPreview(normalizeAssetPath(currentUrl) ?? null);
   }, [currentUrl]);
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -132,8 +133,9 @@ export default function ImageUpload({
           type="text"
           value={preview ?? ''}
           onChange={(e) => {
-            setPreview(e.target.value);
-            onUploaded(e.target.value);
+            const v = normalizeAssetPath(e.target.value);
+            setPreview(v);
+            onUploaded(v);
           }}
           placeholder="or paste image URL"
           className="w-full bg-gray-800/80 border border-gray-700/80 text-white placeholder-gray-500 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"

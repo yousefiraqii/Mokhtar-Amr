@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { normalizeAssetPath } from '@/lib/asset-normalize';
 import type { Project, ProjectInsert } from '@/lib/types';
 import ImageUpload from '@/components/admin/ImageUpload';
 import PDFUpload from '@/components/admin/PDFUpload';
@@ -65,15 +66,15 @@ const { data, error } = await supabase
     setShowModal(true);
   }
 
-  function openEdit(p: Project) {
+function openEdit(p: Project) {
     setForm({
       project_number: p.project_number ?? '',
       title: p.title,
       description: p.description ?? '',
-      image_url: p.image_url ?? '',
-      image_url_2: p.image_url_2 ?? '',
-      pdf_url: p.pdf_url ?? p.demo_url ?? '',
-      demo_url: p.demo_url ?? '',
+      image_url: normalizeAssetPath(p.image_url),
+      image_url_2: normalizeAssetPath(p.image_url_2),
+      pdf_url: normalizeAssetPath(p.pdf_url || p.demo_url),
+      demo_url: normalizeAssetPath(p.demo_url ?? ''),
       github_url: p.github_url ?? '',
       featured: p.featured ?? false,
     });
@@ -85,10 +86,13 @@ const { data, error } = await supabase
     if (!form.title.trim()) return;
     setSaving(true);
     try {
-      const payload = {
+const payload = {
         ...form,
+        image_url: normalizeAssetPath(form.image_url),
+        image_url_2: normalizeAssetPath(form.image_url_2),
+        pdf_url: normalizeAssetPath(form.pdf_url),
         // Sync demo_url with pdf_url for backward compatibility
-        demo_url: form.pdf_url || form.demo_url,
+        demo_url: normalizeAssetPath(form.pdf_url || form.demo_url),
       };
 
       if (editingId) {

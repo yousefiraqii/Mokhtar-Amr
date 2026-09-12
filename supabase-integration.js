@@ -105,13 +105,13 @@ if (profile) {
       const grid = document.querySelector('.projects-grid');
       if (grid) {
         let html = '';
-        projects.forEach((p, idx) => {
+projects.forEach((p, idx) => {
           const num = p.project_number ? String(p.project_number) : String(idx + 1).padStart(2, '0');
-          const photo1 = p.image_url || '';
-          const photo2 = p.image_url_2 || '';
+          const photo1 = normalizeAssetPath(p.image_url);
+          const photo2 = normalizeAssetPath(p.image_url_2);
           const hasPhoto1 = Boolean(photo1);
           const hasPhoto2 = Boolean(photo2);
-          const pdfLink = p.pdf_url || p.demo_url || '';
+          const pdfLink = normalizeAssetPath(p.pdf_url || p.demo_url || '');
 
           const isSinglePhoto = (hasPhoto1 && !hasPhoto2) || (!hasPhoto1 && hasPhoto2);
 
@@ -178,7 +178,7 @@ if (profile) {
         let html = '';
         certs.forEach((c, idx) => {
           const num = String(idx + 1).padStart(3, '0');
-          const imageUrl = c.image_url || `Certificates/${num}.jpg`;
+          const imageUrl = normalizeAssetPath(c.image_url) || `Certificates/${num}.jpg`;
           const title = c.title || `Certificate ${idx + 1}`;
 
           html += `
@@ -223,9 +223,9 @@ if (profile) {
       const volGrid = document.querySelector('.volunteer-grid');
       if (volGrid) {
         let html = '';
-        volunteerItems.forEach((v) => {
-          const photo1 = v.image_url || '';
-          const photo2 = v.image_url_2 || '';
+volunteerItems.forEach((v) => {
+          const photo1 = normalizeAssetPath(v.image_url);
+          const photo2 = normalizeAssetPath(v.image_url_2);
           const hasPhoto1 = Boolean(photo1);
           const hasPhoto2 = Boolean(photo2);
           const isTwo = hasPhoto1 && hasPhoto2;
@@ -278,11 +278,11 @@ if (profile) {
       const researchGrid = document.querySelector('.research-grid');
       if (researchGrid) {
         let html = '';
-        papers.forEach((p) => {
-          const coverUrl = p.image_url || '';
+papers.forEach((p) => {
+          const coverUrl = normalizeAssetPath(p.image_url);
           const hasCover = Boolean(coverUrl);
           const category = p.category || 'RESEARCH PAPER';
-          const pdfLink = p.pdf_url || '';
+          const pdfLink = normalizeAssetPath(p.pdf_url || '');
 
           html += `
             <article class="research-card reveal is-in">
@@ -314,6 +314,16 @@ if (profile) {
   function cap(str) {
     const s = String(str || '').trim();
     return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+  }
+
+  // Resolve stale stored paths (e.g. `Pojects/Project 1/photo.jpg`) to the
+  // actual files (space-free names after the asset cleanup). Leaves absolute /
+  // external URLs untouched.
+  function normalizeAssetPath(path) {
+    if (!path) return '';
+    const p = String(path).trim();
+    if (/^(https?:|data:|blob:|\/\/)/i.test(p)) return p;
+    return p.replace(/\s+/g, '_');
   }
 
   function formatStatNum(val) {

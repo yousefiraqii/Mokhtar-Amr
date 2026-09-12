@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { normalizeAssetPath } from '@/lib/asset-normalize';
 import type { ResearchPaper, ResearchPaperInsert } from '@/lib/types';
 import ImageUpload from '@/components/admin/ImageUpload';
 import PDFUpload from '@/components/admin/PDFUpload';
@@ -60,28 +61,33 @@ const { data, error } = await supabase
     setShowModal(true);
   }
 
-  function openEdit(item: ResearchPaper) {
+function openEdit(item: ResearchPaper) {
     setForm({
       title: item.title,
       category: item.category ?? 'RESEARCH PAPER',
       description: item.description ?? '',
-      image_url: item.image_url ?? '',
-      pdf_url: item.pdf_url ?? '',
+      image_url: normalizeAssetPath(item.image_url),
+      pdf_url: normalizeAssetPath(item.pdf_url),
     });
     setEditingId(item.id);
     setShowModal(true);
   }
 
-  async function handleSave() {
+async function handleSave() {
     if (!form.title.trim()) return;
     setSaving(true);
     try {
+      const payload = {
+        ...form,
+        image_url: normalizeAssetPath(form.image_url),
+        pdf_url: normalizeAssetPath(form.pdf_url),
+      };
       if (editingId) {
-        const { error } = await supabase.from('research_papers').update(form).eq('id', editingId);
+        const { error } = await supabase.from('research_papers').update(payload).eq('id', editingId);
         if (error) throw new Error(error.message || error.details || 'Update failed');
         setToast({ message: 'Research paper updated!', type: 'success' });
       } else {
-        const { error } = await supabase.from('research_papers').insert(form);
+        const { error } = await supabase.from('research_papers').insert(payload);
         if (error) throw new Error(error.message || error.details || 'Insert failed');
         setToast({ message: 'Research paper added!', type: 'success' });
       }
