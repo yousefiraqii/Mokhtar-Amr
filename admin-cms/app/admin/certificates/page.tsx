@@ -32,11 +32,17 @@ export default function CertificatesPage() {
 
   const fetchCerts = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('certificates')
       .select('*')
       .order('created_at', { ascending: true })
       .order('title', { ascending: true });
+    if (error) {
+      setToast({ message: error.message || 'Failed to load certificates', type: 'error' });
+      setCerts([]);
+      setLoading(false);
+      return;
+    }
     setCerts(data ?? []);
     setLoading(false);
   }, [supabase]);

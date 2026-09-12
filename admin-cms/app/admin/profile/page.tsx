@@ -32,7 +32,15 @@ const [clientsValValue, setClientsValValue] = useState('20+');
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('profile').select('*').limit(1).single();
+const { data, error } = await supabase.from('profile').select('*').limit(1).single();
+    if (error) {
+      // PGRST116 = no profile row yet; keep defaults instead of surfacing an error
+      if (error.code !== 'PGRST116') {
+        setToast({ message: error.message || 'Failed to load profile', type: 'error' });
+      }
+      setLoading(false);
+      return;
+    }
     if (data) {
       const p = data as Profile;
       setProfileId(p.id);

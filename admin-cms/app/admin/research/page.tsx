@@ -38,10 +38,16 @@ export default function ResearchPage() {
 
   const fetchPapers = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+const { data, error } = await supabase
       .from('research_papers')
       .select('*')
       .order('created_at', { ascending: false });
+    if (error) {
+      setToast({ message: error.message || 'Failed to load research papers', type: 'error' });
+      setPapers([]);
+      setLoading(false);
+      return;
+    }
     setPapers(data ?? []);
     setLoading(false);
   }, [supabase]);

@@ -42,10 +42,16 @@ export default function ProjectsPage() {
 
   const fetchProjects = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+const { data, error } = await supabase
       .from('projects')
       .select('*')
       .order('created_at', { ascending: false });
+    if (error) {
+      setToast({ message: error.message || 'Failed to load projects', type: 'error' });
+      setProjects([]);
+      setLoading(false);
+      return;
+    }
     setProjects(data ?? []);
     setLoading(false);
   }, [supabase]);

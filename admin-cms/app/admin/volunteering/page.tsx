@@ -36,10 +36,16 @@ export default function VolunteeringPage() {
 
   const fetchActivities = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+const { data, error } = await supabase
       .from('volunteering')
       .select('*')
       .order('created_at', { ascending: false });
+    if (error) {
+      setToast({ message: error.message || 'Failed to load activities', type: 'error' });
+      setActivities([]);
+      setLoading(false);
+      return;
+    }
     setActivities(data ?? []);
     setLoading(false);
   }, [supabase]);

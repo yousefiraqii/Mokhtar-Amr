@@ -12,8 +12,11 @@ interface ImageUploadProps {
   label?: string;
 }
 
+const FALLBACK_BUCKET = 'portfolio-assets';
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 export default function ImageUpload({
-  bucket = 'portfolio',
+  bucket = FALLBACK_BUCKET,
   folder = 'uploads',
   currentUrl,
   onUploaded,
@@ -32,6 +35,18 @@ export default function ImageUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Allow re-selecting the same file after a failed attempt
+    e.target.value = '';
+
+    if (!file.type.startsWith('image/')) {
+      setError('Only image files are allowed.');
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      setError('Image is too large. Maximum size is 10MB.');
+      return;
+    }
+
     // Local preview
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
@@ -40,27 +55,29 @@ export default function ImageUpload({
 
     try {
       const supabase = createClient();
-      const ext = file.name.split('.').pop();
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
       const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
+      let activeBucket = bucket;
       let uploadRes = await supabase.storage
-        .from(bucket)
+        .from(activeBucket)
         .upload(filename, file, { upsert: true });
 
-      if (uploadRes.error && bucket !== 'portfolio-assets') {
+      // Fall back to the known-good assets bucket if the requested one fails
+      if (uploadRes.error && activeBucket !== FALLBACK_BUCKET) {
+        activeBucket = FALLBACK_BUCKET;
         uploadRes = await supabase.storage
-          .from('portfolio-assets')
+          .from(activeBucket)
           .upload(filename, file, { upsert: true });
-        if (!uploadRes.error) bucket = 'portfolio-assets';
       }
 
       if (uploadRes.error) throw uploadRes.error;
 
-      const { data } = supabase.storage.from(bucket).getPublicUrl(filename);
+      const { data } = supabase.storage.from(activeBucket).getPublicUrl(filename);
       setPreview(data.publicUrl);
       onUploaded(data.publicUrl);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+    } catch (err: any) {
+      setError(err?.message || 'Upload failed');
       setPreview(currentUrl ?? null);
     } finally {
       setUploading(false);
